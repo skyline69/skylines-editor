@@ -14,5 +14,8 @@
 ## Prequisites
 - [NeoVim](https://neovim.io/)
 - [Packer](https://github.com/wbthomason/packer.nvim)(Package Manager)
-- Some LSP's
+- A [NerdFont](https://www.nerdfonts.com/)
+- Motivation to install everything
+- Some LSP's (you can configure them yourself in the [lsp.lua](/lua/lsp.lua))
 > Note: Install the packages using `:PackerInstall`
+> Note: You can install the LSP's using `:Mason` (built-in)
