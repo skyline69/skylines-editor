@@ -18,4 +18,5 @@
 - Motivation to install everything
 - Some LSP's (you can configure them yourself in the [lsp.lua](/lua/lsp.lua))
 > Note: Install the packages using `:PackerInstall`
+
 > Note: You can install the LSP's using `:Mason` (built-in)
