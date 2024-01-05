@@ -9,6 +9,7 @@
 - ✅ [Telescope](https://github.com/nvim-telescope/telescope.nvim) built-in
 - ✅ GitHub Copilot built-in (must login using `:Copilot auth`)
 - ✅ [Nvim-Tree](https://github.com/nvim-tree/nvim-tree.lua) built-in
+- ✅ [Neovide](https://neovide.dev/) compatible
 > Note: Look up the config, to see how to use this setup.
 
 ## Prequisites
