@@ -34,11 +34,10 @@ return require("packer").startup(function(use)
 		"nyoom-engineering/oxocarbon.nvim",
 		"ellisonleao/glow.nvim",
 		"norcalli/nvim-colorizer.lua",
-    "zbirenbaum/copilot.lua",
-    {
-       "folke/trouble.nvim",
-       requires = "nvim-tree/nvim-web-devicons"
-    }
+		"zbirenbaum/copilot.lua",
+		{
+			"folke/trouble.nvim",
+			requires = "nvim-tree/nvim-web-devicons",
+		},
 	})
 end)
-
