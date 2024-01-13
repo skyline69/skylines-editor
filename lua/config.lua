@@ -7,9 +7,10 @@ vim.o.shiftwidth = 4
 vim.opt.listchars = {
 	trail = "·",
 }
+vim.opt.clipboard = "unnamedplus" -- This is for using the system clipboard
 
 -- booleans
-vim.o.expandtab = true
+im.o.expandtab = true
 vim.opt.termguicolors = true
 vim.wo.relativenumber = true
 vim.g.coq_settings = { auto_start = true }
