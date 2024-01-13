@@ -10,7 +10,7 @@ vim.opt.listchars = {
 vim.opt.clipboard = "unnamedplus" -- This is for using the system clipboard
 
 -- booleans
-im.o.expandtab = true
+vim.o.expandtab = true
 vim.opt.termguicolors = true
 vim.wo.relativenumber = true
 vim.g.coq_settings = { auto_start = true }
