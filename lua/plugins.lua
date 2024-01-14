@@ -31,13 +31,20 @@ return require("packer").startup(function(use)
 		"RaafatTurki/hex.nvim",
 		"stevearc/conform.nvim",
 		"lukas-reineke/indent-blankline.nvim",
-		"nyoom-engineering/oxocarbon.nvim",
+		-- "nyoom-engineering/oxocarbon.nvim",
+		"EdenEast/nightfox.nvim",
 		"ellisonleao/glow.nvim",
 		"norcalli/nvim-colorizer.lua",
 		"zbirenbaum/copilot.lua",
 		{
 			"folke/trouble.nvim",
 			requires = "nvim-tree/nvim-web-devicons",
+		},
+		"j-hui/fidget.nvim",
+		{
+			"filipdutescu/renamer.nvim",
+			branch = "master",
+			requires = { { "nvim-lua/plenary.nvim" } },
 		},
 	})
 end)
