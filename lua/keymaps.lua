@@ -46,7 +46,3 @@ end)
 vim.keymap.set("n", "gR", function()
 	require("trouble").toggle("lsp_references")
 end)
-
--- Rest.nvim
-vim.api.nvim_set_keymap('n', '<leader>hh', '<cmd>lua require("rest-nvim").run()<CR>', { noremap = true, silent = true })
-
