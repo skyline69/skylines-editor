@@ -24,6 +24,8 @@ function M.start_lsp()
 	lsp.taplo.setup({ coq.lsp_ensure_capabilities() })
 	lsp.fortls.setup({ coq.lsp_ensure_capabilities() })
 	lsp.sqls.setup({ coq.lsp_ensure_capabilities() })
+	lsp.tsserver.setup({ coq.lsp_ensure_capabilities() })
+	lsp.zls.setup({ coq.lsp_ensure_capabilities() })
 end
 
 M.start_lsp()
