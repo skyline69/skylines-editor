@@ -1,7 +1,7 @@
 vim.o.background = "dark" -- or "light" for light mode
--- vim.cmd.colorscheme "oxocarbon"
-require("theme")
-vim.cmd.colorscheme "carbonfox"
+vim.cmd.colorscheme "oxocarbon"
+-- require("theme")
+-- vim.cmd.colorscheme "carbonfox"
 
 local alpha = require("alpha")
 local dashboard = require("alpha.themes.dashboard")
@@ -151,3 +151,14 @@ require("fidget").setup({
       string.format("%s/fidget.nvim.log", vim.fn.stdpath("cache")),
   },
 })
+
+-- rainbow brackets
+
+require('nvim-treesitter.configs').setup {
+  rainbow = {
+    enable = true,
+    -- disable = { 'jsx', 'cpp' },
+    query = 'rainbow-parens',
+    strategy = require('ts-rainbow').strategy.global,
+  }
+}

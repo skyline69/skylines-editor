@@ -31,8 +31,8 @@ return require("packer").startup(function(use)
 		"RaafatTurki/hex.nvim",
 		"stevearc/conform.nvim",
 		"lukas-reineke/indent-blankline.nvim",
-		-- "nyoom-engineering/oxocarbon.nvim",
-		"EdenEast/nightfox.nvim",
+		"nyoom-engineering/oxocarbon.nvim",
+		-- "EdenEast/nightfox.nvim",
 		"ellisonleao/glow.nvim",
 		"norcalli/nvim-colorizer.lua",
 		"zbirenbaum/copilot.lua",
@@ -46,5 +46,6 @@ return require("packer").startup(function(use)
 			branch = "master",
 			requires = { { "nvim-lua/plenary.nvim" } },
 		},
+    "HiPhish/nvim-ts-rainbow2"
 	})
 end)

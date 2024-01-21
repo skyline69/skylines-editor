@@ -26,6 +26,7 @@ function M.start_lsp()
 	lsp.sqls.setup({ coq.lsp_ensure_capabilities() })
 	lsp.tsserver.setup({ coq.lsp_ensure_capabilities() })
 	lsp.zls.setup({ coq.lsp_ensure_capabilities() })
+  lsp.dockerls.setup({ coq.lsp_ensure_capabilities() })
 end
 
 M.start_lsp()
