@@ -153,12 +153,12 @@ require("fidget").setup({
 })
 
 -- rainbow brackets
-
-require('nvim-treesitter.configs').setup {
-  rainbow = {
-    enable = true,
-    -- disable = { 'jsx', 'cpp' },
-    query = 'rainbow-parens',
-    strategy = require('ts-rainbow').strategy.global,
-  }
-}
+--
+-- require('nvim-treesitter.configs').setup {
+--   rainbow = {
+--     enable = true,
+--     -- disable = { 'jsx', 'cpp' },
+--     query = 'rainbow-parens',
+--     strategy = require('ts-rainbow').strategy.global,
+--   }
+-- }
