@@ -31,8 +31,9 @@ return require("packer").startup(function(use)
 		"RaafatTurki/hex.nvim",
 		"stevearc/conform.nvim",
 		"lukas-reineke/indent-blankline.nvim",
+		"luisiacc/gruvbox-baby",
 		"nyoom-engineering/oxocarbon.nvim",
-    'kdheepak/lazygit.nvim',
+		"kdheepak/lazygit.nvim",
 		-- "EdenEast/nightfox.nvim",
 		"ellisonleao/glow.nvim",
 		"norcalli/nvim-colorizer.lua",
@@ -48,5 +49,11 @@ return require("packer").startup(function(use)
 			requires = { { "nvim-lua/plenary.nvim" } },
 		},
 		"HiPhish/nvim-ts-rainbow2",
+		{
+			"VonHeikemen/fine-cmdline.nvim",
+			requires = {
+				{ "MunifTanjim/nui.nvim" },
+			},
+		},
 	})
 end)
