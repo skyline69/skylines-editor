@@ -1,32 +1,21 @@
 local M = {}
 
 local lsp = require("lspconfig")
-local coq = require("coq")
 
 function M.start_lsp()
-	lsp.lua_ls.setup({ coq.lsp_ensure_capabilities() })
-	lsp.rust_analyzer.setup({
-		coq.lsp_ensure_capabilities({
-			settings = {
-				["rust-analyzer"] = {
-					checkOnSave = {
-						command = "clippy",
-					},
-				},
-			},
-		}),
-	})
+	lsp.lua_ls.setup({ })
+	lsp.rust_analyzer.setup({})
 
-	lsp.gopls.setup({ coq.lsp_ensure_capabilities() })
-	lsp.ruff_lsp.setup({ coq.lsp_ensure_capabilities() })
-	lsp.jdtls.setup({ coq.lsp_ensure_capabilities() })
-	lsp.clangd.setup({ coq.lsp_ensure_capabilities() })
-	lsp.taplo.setup({ coq.lsp_ensure_capabilities() })
-	lsp.fortls.setup({ coq.lsp_ensure_capabilities() })
-	lsp.sqls.setup({ coq.lsp_ensure_capabilities() })
-	lsp.tsserver.setup({ coq.lsp_ensure_capabilities() })
-	lsp.zls.setup({ coq.lsp_ensure_capabilities() })
-  lsp.dockerls.setup({ coq.lsp_ensure_capabilities() })
+	lsp.gopls.setup({ })
+	lsp.ruff_lsp.setup({  })
+	lsp.jdtls.setup({  })
+	lsp.clangd.setup({  })
+	lsp.taplo.setup({  })
+	lsp.fortls.setup({  })
+	lsp.sqls.setup({  })
+	lsp.tsserver.setup({  })
+	lsp.zls.setup({  })
+  lsp.dockerls.setup({  })
 end
 
 M.start_lsp()

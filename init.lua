@@ -4,6 +4,7 @@ require("plugins")
 require("appearance")
 require("keymaps")
 require("lsp")
+require("nvim_cmp")
 require("formatting")
 --libraries
 require("lualine").setup()

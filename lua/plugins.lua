@@ -1,4 +1,6 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
+
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -15,7 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 return require("lazy").setup({
 	-- "ellisonleao/gruvbox.nvim", -- theme
 	"bluz71/vim-nightfly-colors", --theme
-	"rstacruz/vim-closer",
+	-- "rstacruz/vim-closer",
 	"lewis6991/gitsigns.nvim",
 	{
 		"nvim-lualine/lualine.nvim",
@@ -25,7 +27,6 @@ return require("lazy").setup({
 	"nvim-tree/nvim-web-devicons",
 	"nvim-lua/plenary.nvim",
 	"nvim-telescope/telescope.nvim",
-	-- "romgrk/barbar.nvim",
 	{
 		"willothy/nvim-cokeline",
 		dependencies = {
@@ -35,9 +36,6 @@ return require("lazy").setup({
 		},
 		config = true,
 	},
-	"ms-jpq/coq_nvim",
-	"ms-jpq/coq.artifacts",
-	"ms-jpq/coq.thirdparty",
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
 	"neovim/nvim-lspconfig",
@@ -67,6 +65,15 @@ return require("lazy").setup({
 		branch = "master",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-	-- "HiPhish/nvim-ts-rainbow2",
-	-- "mrded/nvim-lsp-notify",
+	{
+		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
+		"hrsh7th/cmp-cmdline",
+		"hrsh7th/nvim-cmp",
+		"L3MON4D3/LuaSnip",
+		"saadparwaiz1/cmp_luasnip",
+	},
 })
+
+

@@ -42,9 +42,10 @@ end)
 vim.keymap.set("n", "<leader>xl", function()
 	require("trouble").toggle("loclist")
 end)
-vim.keymap.set("n", "gR", function()
+vim.keymap.set("n", "gr", function()
 	require("trouble").toggle("lsp_references")
 end)
+vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
 
 -- Renamer
 vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
