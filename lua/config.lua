@@ -24,7 +24,6 @@ vim.cmd([[
 ]])
 
 
-
 -- neovide --
 if vim.g.neovide then
     -- Helper function for transparency formatting

@@ -10,22 +10,21 @@ vim.keymap.set("n", "<leader>t", ":NvimTreeToggle<CR>", { noremap = true, silent
 vim.api.nvim_set_keymap("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true })
 
 local map = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
+local opts = { silent = true, noremap = true }
 
 -- Tabs
-map("n", "t<Left>", "<Cmd>BufferPrevious<CR>", opts)
-map("n", "t<right>", "<Cmd>BufferNext<CR>", opts)
-map("n", "t1", "<Cmd>BufferGoto 1<CR>", opts)
-map("n", "t2", "<Cmd>BufferGoto 2<CR>", opts)
-map("n", "t3", "<Cmd>BufferGoto 3<CR>", opts)
-map("n", "t4", "<Cmd>BufferGoto 4<CR>", opts)
-map("n", "t5", "<Cmd>BufferGoto 5<CR>", opts)
-map("n", "t6", "<Cmd>BufferGoto 6<CR>", opts)
-map("n", "t7", "<Cmd>BufferGoto 7<CR>", opts)
-map("n", "t8", "<Cmd>BufferGoto 8<CR>", opts)
-map("n", "t9", "<Cmd>BufferGoto 9<CR>", opts)
-map("n", "t0", "<Cmd>BufferLast<CR>", opts)
-map("n", "tc", "<Cmd>BufferClose<CR>", opts)
+map("n", "t<Left>", "<Plug>(cokeline-focus-prev)", opts)
+map("n", "t<right>", "<Plug>(cokeline-focus-next)", opts)
+for i = 1, 9 do
+  map(
+    "n",
+    ("t%s"):format(i),
+    ("<Plug>(cokeline-focus-%s)"):format(i),
+    opts
+  )
+end
+-- to close tabs do :bd
+map("n", "tc", ":bd<CR>", opts)
 
 -- trouble library
 vim.keymap.set("n", "<leader>xx", function()
@@ -54,5 +53,3 @@ vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()
 
 -- LazyGit
 vim.api.nvim_set_keymap('n', '<leader>gg', '<cmd>LazyGit<cr>', { noremap = true, silent = true })
--- fine cmd
-vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', {noremap = true})

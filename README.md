@@ -14,10 +14,10 @@
 
 ## Prequisites
 - [NeoVim](https://neovim.io/)
-- [Packer](https://github.com/wbthomason/packer.nvim)(Package Manager)
+- [Lazy](https://github.com/folke/lazy.nvim)(Package Manager)
 - A [NerdFont](https://www.nerdfonts.com/)
 - Motivation to install everything
 - Some LSP's (you can configure them yourself in the [lsp.lua](/lua/lsp.lua))
-> Note: Install the packages using `:PackerInstall`
+> Note: Install the packages using `:Lazy install`
 
 > Note: You can install the LSP's using `:Mason` (built-in)
