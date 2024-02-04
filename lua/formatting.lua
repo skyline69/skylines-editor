@@ -36,3 +36,10 @@ require("nvim-autopairs").setup({
 	enable_check_bracket_line = false,
 	enable_moveright = false,
 })
+
+require("nvim-treesitter.configs").setup({
+	autotag = {
+		enable = true,
+		auto_rename = true,
+	},
+})

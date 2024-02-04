@@ -71,6 +71,7 @@ return require("lazy").setup({
 		"mrded/nvim-lsp-notify",
 		dependencies = "rcarriga/nvim-notify",
 	},
-  "EdenEast/nightfox.nvim",
-  'eandrju/cellular-automaton.nvim'
+	"EdenEast/nightfox.nvim",
+	"eandrju/cellular-automaton.nvim",
+	"windwp/nvim-ts-autotag",
 })

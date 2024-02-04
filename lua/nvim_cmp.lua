@@ -49,17 +49,18 @@ cmp.setup({
 		["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
 		["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
 		["<C-Space>"] = cmp.mapping.complete(),
-		["<CR>"] = cmp.mapping.abort(),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.confirm({
-					behavior = cmp.ConfirmBehavior.Insert,
-					select = true,
-				})
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
+		-- ["<CR>"] = cmp.mapping.abort(),
+    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+	-- 	["<Tab>"] = cmp.mapping(function(fallback)
+	-- 		if cmp.visible() then
+	-- 			cmp.confirm({
+	-- 				behavior = cmp.ConfirmBehavior.Insert,
+	-- 				select = true,
+	-- 			})
+	-- 		else
+	-- 			fallback()
+	-- 		end
+	-- 	end, { "i", "s" }),
 	}),
 	formatting = {
 		fields = { "kind", "abbr", "menu" },

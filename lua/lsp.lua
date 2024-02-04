@@ -32,6 +32,7 @@ function M.start_lsp()
 	lsp.tsserver.setup({})
 	lsp.zls.setup({})
 	lsp.dockerls.setup({})
+  lsp.cssls.setup({})
 end
 
 M.start_lsp()
