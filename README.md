@@ -13,6 +13,9 @@
 - ✅ [Neovide](https://neovide.dev/) compatible
 > Note: Look up the config, to see how to use this setup.
 
+## Demo
+[![asciicast](https://asciinema.org/a/636243.svg)](https://asciinema.org/a/636243)
+
 ## Prequisites
 - [NeoVim](https://neovim.io/)
 - [Lazy](https://github.com/folke/lazy.nvim)(Package Manager)
