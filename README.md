@@ -1,8 +1,9 @@
-# 🔵 Skyline's Editor (NeoVim Setup)
+# Skyline's Editor (NeoVim Setup)
 
-![start-up-screen](https://github.com/skyline69/skylines-editor/assets/67526259/4fbb0bcc-41ed-49e1-ab98-c7a99555144c)
+![start-up-screen](https://github.com/skyline69/skylines-editor/assets/67526259/cac48334-002e-4634-ac9c-5e77a0eeb620)
 
 ## Features
+![features](https://github.com/skyline69/skylines-editor/assets/67526259/0e01f9c7-7b53-4326-8d28-3723818629ed)
 - ✅ Native LSP Built-in (<s>Very</s> Blazingly fast)
 - ✅ Cool image on README
 - ✅ 99.1% Pure Lua
