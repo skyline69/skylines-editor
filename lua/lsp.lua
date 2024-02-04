@@ -3,19 +3,35 @@ local M = {}
 local lsp = require("lspconfig")
 
 function M.start_lsp()
-	lsp.lua_ls.setup({ })
-	lsp.rust_analyzer.setup({})
+	lsp.lua_ls.setup({})
+	lsp.rust_analyzer.setup({
+		settings = {
+			["rust-analyzer"] = {
+				checkOnSave = {
+					allFeatures = true,
+					overrideCommand = {
+						"cargo",
+						"clippy",
+						"--workspace",
+						"--message-format=json",
+						"--all-targets",
+						"--all-features",
+					},
+				},
+			},
+		},
+	})
 
-	lsp.gopls.setup({ })
-	lsp.ruff_lsp.setup({  })
-	lsp.jdtls.setup({  })
-	lsp.clangd.setup({  })
-	lsp.taplo.setup({  })
-	lsp.fortls.setup({  })
-	lsp.sqls.setup({  })
-	lsp.tsserver.setup({  })
-	lsp.zls.setup({  })
-  lsp.dockerls.setup({  })
+	lsp.gopls.setup({})
+	lsp.ruff_lsp.setup({})
+	lsp.jdtls.setup({})
+	lsp.clangd.setup({})
+	lsp.taplo.setup({})
+	lsp.fortls.setup({})
+	lsp.sqls.setup({})
+	lsp.tsserver.setup({})
+	lsp.zls.setup({})
+	lsp.dockerls.setup({})
 end
 
 M.start_lsp()

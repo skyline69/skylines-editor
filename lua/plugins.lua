@@ -1,6 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -15,9 +14,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 return require("lazy").setup({
-	-- "ellisonleao/gruvbox.nvim", -- theme
-	"bluz71/vim-nightfly-colors", --theme
-	-- "rstacruz/vim-closer",
 	"lewis6991/gitsigns.nvim",
 	{
 		"nvim-lualine/lualine.nvim",
@@ -49,9 +45,7 @@ return require("lazy").setup({
 	"stevearc/conform.nvim",
 	"lukas-reineke/indent-blankline.nvim",
 	"luisiacc/gruvbox-baby",
-	"nyoom-engineering/oxocarbon.nvim",
 	"kdheepak/lazygit.nvim",
-	-- "EdenEast/nightfox.nvim",
 	"ellisonleao/glow.nvim",
 	"norcalli/nvim-colorizer.lua",
 	"zbirenbaum/copilot.lua",
@@ -59,7 +53,6 @@ return require("lazy").setup({
 		"folke/trouble.nvim",
 		dependencies = "nvim-tree/nvim-web-devicons",
 	},
-	"j-hui/fidget.nvim",
 	{
 		"filipdutescu/renamer.nvim",
 		branch = "master",
@@ -74,6 +67,10 @@ return require("lazy").setup({
 		"L3MON4D3/LuaSnip",
 		"saadparwaiz1/cmp_luasnip",
 	},
+	{
+		"mrded/nvim-lsp-notify",
+		dependencies = "rcarriga/nvim-notify",
+	},
+  "EdenEast/nightfox.nvim",
+  'eandrju/cellular-automaton.nvim'
 })
-
-
