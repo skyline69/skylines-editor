@@ -74,4 +74,5 @@ return require("lazy").setup({
 	"EdenEast/nightfox.nvim",
 	"eandrju/cellular-automaton.nvim",
 	"windwp/nvim-ts-autotag",
+  "nvim-treesitter/nvim-treesitter-context"
 })
