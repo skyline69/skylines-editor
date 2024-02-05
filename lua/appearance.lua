@@ -44,3 +44,4 @@ require("colorizer").setup()
 require("lsp-notify").setup({
 	notify = require("notify")
 })
+require("scrollbar").setup()
