@@ -53,4 +53,4 @@ vim.api.nvim_set_keymap('n', '<leader>rn', '<cmd>lua require("renamer").rename()
 vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
 
 -- LazyGit
-vim.api.nvim_set_keymap('n', '<leader>gg', '<cmd>LazyGit<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>lg', '<cmd>LazyGit<cr>', { noremap = true, silent = true })
