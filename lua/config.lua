@@ -23,7 +23,7 @@ vim.loader.enable()
 --   autocmd FileType c setlocal tabstop=2 softtabstop=2 shiftwidth=2
 -- ]])
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"javascript", "typescript", "typescriptreact", "c", "lua", "css"},
+  pattern = {"javascript", "typescript", "typescriptreact", "c", "lua", "css", "cpp"},
   callback = function()
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
