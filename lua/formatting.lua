@@ -80,3 +80,6 @@ require("nvim-treesitter.configs").setup({
 		additional_vim_regex_highlighting = false,
 	},
 })
+
+-- for mdx files
+vim.treesitter.language.register('mdx', "markdown")

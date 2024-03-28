@@ -74,4 +74,14 @@ return require("lazy").setup({
 	"EdenEast/nightfox.nvim",
 	"eandrju/cellular-automaton.nvim",
 	"windwp/nvim-ts-autotag",
+	{
+		"roobert/tailwindcss-colorizer-cmp.nvim",
+		-- optionally, override the default options:
+		config = function()
+			require("tailwindcss-colorizer-cmp").setup({
+				color_square_width = 2,
+			})
+		end,
+	},
+  'andweeb/presence.nvim'
 })

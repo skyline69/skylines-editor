@@ -1,5 +1,5 @@
 vim.o.background = "dark" -- or "light" for light mode
-vim.cmd.colorscheme "carbonfox"
+vim.cmd.colorscheme("carbonfox")
 
 local alpha = require("alpha")
 local dashboard = require("alpha.themes.dashboard")
@@ -42,5 +42,32 @@ endfunction
 require("colorizer").setup()
 
 require("lsp-notify").setup({
-	notify = require("notify")
+	notify = require("notify"),
+})
+
+-- discord rich presence
+
+-- The setup config table shows all available config options with their default values:
+require("presence").setup({
+	-- General options
+	auto_update = true,
+	neovim_image_text = "Ask me about Rust",
+	main_image = "file",
+	client_id = "793271441293967371",
+	log_level = nil,
+	debounce_timeout = 10,
+	enable_line_number = false,
+	blacklist = {},
+	buttons = false,
+	file_assets = {},
+	show_time = false,
+
+	-- Rich Presence text options
+	editing_text = "Coding right now",
+	file_explorer_text = "Browsing",
+	git_commit_text = "Committing changes",
+	plugin_manager_text = "Currently managing plugins",
+	reading_text = "Currently Reading",
+	workspace_text = "Currently Working",
+	line_number_text = "",
 })

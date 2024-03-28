@@ -1,6 +1,11 @@
 local M = {}
 
 local lsp = require("lspconfig")
+local cmp = require("cmp")
+
+cmp.config.formatting = {
+	format = require("tailwindcss-colorizer-cmp").formatter,
+}
 
 function M.start_lsp()
 	lsp.lua_ls.setup({})
@@ -27,13 +32,20 @@ function M.start_lsp()
 	lsp.jdtls.setup({})
 	lsp.taplo.setup({})
 	lsp.fortls.setup({})
-  lsp.ccls.setup({})
+	lsp.ccls.setup({})
 	lsp.sqls.setup({})
 	lsp.tsserver.setup({})
 	lsp.zls.setup({})
 	lsp.dockerls.setup({})
-  lsp.cssls.setup({})
-  lsp.astro.setup({})
+	lsp.cssls.setup({})
+	lsp.html.setup({})
+	lsp.svelte.setup({})
+	lsp.marksman.setup({})
+	lsp.elixirls.setup({
+		cmd = { "elixir-ls" },
+		on_attach = on_attach,
+		capabilities = capabilities,
+	})
 end
 
 M.start_lsp()
