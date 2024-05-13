@@ -41,6 +41,11 @@ function M.start_lsp()
 	lsp.html.setup({})
 	lsp.svelte.setup({})
 	lsp.marksman.setup({})
+	lsp.sourcekit.setup({
+		cmd = { "sourcekit-lsp" },
+		filetypes = { "swift", "objective-c", "objective-cpp" },
+		root_dir = lsp.util.root_pattern("Package.swift", ".git"),
+	})
 	lsp.elixirls.setup({
 		cmd = { "elixir-ls" },
 		on_attach = on_attach,

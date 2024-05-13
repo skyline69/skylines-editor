@@ -14,9 +14,7 @@ require("conform").setup({
 			args = { "$FILENAME" },
 			stdin = false,
 		},
-		-- other formatters
 	},
-	--
 })
 
 vim.api.nvim_create_user_command("Format", function(args)
@@ -82,4 +80,4 @@ require("nvim-treesitter.configs").setup({
 })
 
 -- for mdx files
-vim.treesitter.language.register('mdx', "markdown")
+vim.treesitter.language.register("mdx", "markdown")

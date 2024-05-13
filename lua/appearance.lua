@@ -51,7 +51,7 @@ require("lsp-notify").setup({
 require("presence").setup({
 	-- General options
 	auto_update = true,
-	neovim_image_text = "Ask me about Rust",
+	neovim_image_text = "Skyline's Editor",
 	main_image = "file",
 	client_id = "793271441293967371",
 	log_level = nil,
@@ -60,7 +60,7 @@ require("presence").setup({
 	blacklist = {},
 	buttons = false,
 	file_assets = {},
-	show_time = false,
+	show_time = true,
 
 	-- Rich Presence text options
 	editing_text = "Coding right now",
@@ -70,4 +70,10 @@ require("presence").setup({
 	reading_text = "Currently Reading",
 	workspace_text = "Currently Working",
 	line_number_text = "",
+})
+
+require("nvim-tree").setup({
+	view = {
+		side = "right",
+	},
 })

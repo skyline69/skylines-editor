@@ -19,6 +19,7 @@ return require("lazy").setup({
 		"nvim-lualine/lualine.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons", optional = true },
 	},
+	-- "nvim-tree/nvim-tree.lua",
 	"nvim-tree/nvim-tree.lua",
 	"nvim-tree/nvim-web-devicons",
 	"nvim-lua/plenary.nvim",
@@ -83,5 +84,5 @@ return require("lazy").setup({
 			})
 		end,
 	},
-  'andweeb/presence.nvim'
+	"andweeb/presence.nvim",
 })

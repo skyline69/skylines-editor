@@ -8,7 +8,6 @@ require("nvim_cmp")
 require("formatting")
 --libraries
 require("lualine").setup()
-require("nvim-tree").setup()
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("crates").setup()
