@@ -41,9 +41,13 @@ endfunction
 
 require("colorizer").setup()
 
-require("lsp-notify").setup({
-	notify = require("notify"),
-})
+-- OLD START
+-- require("lsp-notify").setup({
+-- 	notify = require("notify"),
+-- })
+-- OLD END
+
+require("fidget").setup()
 
 -- discord rich presence
 

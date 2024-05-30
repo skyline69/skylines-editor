@@ -68,10 +68,11 @@ return require("lazy").setup({
 		"L3MON4D3/LuaSnip",
 		"saadparwaiz1/cmp_luasnip",
 	},
-	{
-		"mrded/nvim-lsp-notify",
-		dependencies = "rcarriga/nvim-notify",
-	},
+	-- {
+	-- 	"mrded/nvim-lsp-notify",
+	-- 	dependencies = "rcarriga/nvim-notify",
+	-- },
+	"j-hui/fidget.nvim",
 	"EdenEast/nightfox.nvim",
 	"eandrju/cellular-automaton.nvim",
 	"windwp/nvim-ts-autotag",
