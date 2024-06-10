@@ -16,12 +16,7 @@ local opts = { silent = true, noremap = true }
 map("n", "t<Left>", "<Plug>(cokeline-focus-prev)", opts)
 map("n", "t<right>", "<Plug>(cokeline-focus-next)", opts)
 for i = 1, 9 do
-  map(
-    "n",
-    ("t%s"):format(i),
-    ("<Plug>(cokeline-focus-%s)"):format(i),
-    opts
-  )
+	map("n", ("t%s"):format(i), ("<Plug>(cokeline-focus-%s)"):format(i), opts)
 end
 -- to close tabs do :bd
 map("n", "tc", ":bd<CR>", opts)
@@ -36,9 +31,24 @@ end)
 vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
 
 -- Renamer
-vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("i", "<F2>", '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>rn",
+	'<cmd>lua require("renamer").rename()<cr>',
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"v",
+	"<leader>rn",
+	'<cmd>lua require("renamer").rename()<cr>',
+	{ noremap = true, silent = true }
+)
 
 -- LazyGit
-vim.api.nvim_set_keymap('n', '<leader>lg', '<cmd>LazyGit<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>lg", "<cmd>LazyGit<cr>", { noremap = true, silent = true })
+
+-- nvim-spectre
+vim.keymap.set("n", "<leader>S", '<cmd>lua require("spectre").toggle()<CR>', {
+	desc = "Toggle Spectre",
+})

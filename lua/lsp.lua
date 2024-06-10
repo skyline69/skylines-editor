@@ -7,6 +7,9 @@ cmp.config.formatting = {
 	format = require("tailwindcss-colorizer-cmp").formatter,
 }
 
+require('pest-vim').setup {}
+
+
 function M.start_lsp()
 	lsp.lua_ls.setup({})
 	lsp.rust_analyzer.setup({
@@ -41,6 +44,7 @@ function M.start_lsp()
 	lsp.html.setup({})
 	lsp.svelte.setup({})
 	lsp.marksman.setup({})
+	lsp.pest_ls.setup({})
 	lsp.sourcekit.setup({
 		cmd = { "sourcekit-lsp" },
 		filetypes = { "swift", "objective-c", "objective-cpp" },

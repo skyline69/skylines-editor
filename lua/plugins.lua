@@ -66,6 +66,7 @@ return require("lazy").setup({
 		"hrsh7th/cmp-cmdline",
 		"hrsh7th/nvim-cmp",
 		"L3MON4D3/LuaSnip",
+		"pest-parser/pest.vim",
 		"saadparwaiz1/cmp_luasnip",
 	},
 	-- {
@@ -86,4 +87,8 @@ return require("lazy").setup({
 		end,
 	},
 	"andweeb/presence.nvim",
+	"nvim-pack/nvim-spectre",
+	"lewis6991/satellite.nvim",
+	"rmagatti/auto-session",
 })
+

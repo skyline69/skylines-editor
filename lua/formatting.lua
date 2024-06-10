@@ -81,3 +81,6 @@ require("nvim-treesitter.configs").setup({
 
 -- for mdx files
 vim.treesitter.language.register("mdx", "markdown")
+
+-- Autosession
+require('auto-session').setup()

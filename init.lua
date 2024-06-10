@@ -7,7 +7,9 @@ require("lsp")
 require("nvim_cmp")
 require("formatting")
 --libraries
-require("lualine").setup()
+require("lualine").setup({
+	sections = { lualine_c = { require("auto-session.lib").current_session_name } },
+})
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("crates").setup()
