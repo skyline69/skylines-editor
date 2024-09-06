@@ -7,8 +7,7 @@ cmp.config.formatting = {
 	format = require("tailwindcss-colorizer-cmp").formatter,
 }
 
-require('pest-vim').setup {}
-
+require("pest-vim").setup({})
 
 function M.start_lsp()
 	lsp.lua_ls.setup({})
@@ -35,14 +34,14 @@ function M.start_lsp()
 	lsp.jdtls.setup({})
 	lsp.taplo.setup({})
 	lsp.fortls.setup({})
-	lsp.ccls.setup({})
+	lsp.clangd.setup({})
 	lsp.sqls.setup({})
-	lsp.tsserver.setup({})
 	lsp.zls.setup({})
 	lsp.dockerls.setup({})
 	lsp.cssls.setup({})
 	lsp.html.setup({})
 	lsp.svelte.setup({})
+	lsp.slint_lsp.setup({})
 	lsp.marksman.setup({})
 	lsp.pest_ls.setup({})
 	lsp.sourcekit.setup({

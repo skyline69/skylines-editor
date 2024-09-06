@@ -90,5 +90,14 @@ return require("lazy").setup({
 	"nvim-pack/nvim-spectre",
 	"lewis6991/satellite.nvim",
 	"rmagatti/auto-session",
+	"alec-gibson/nvim-tetris",
+	{
+		"Febri-i/snake.nvim",
+		dependencies = {
+			"Febri-i/fscreen.nvim",
+		},
+		opts = {},
+	},
+	"mfussenegger/nvim-dap",
+	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
 })
-

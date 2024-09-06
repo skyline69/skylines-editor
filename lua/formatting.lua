@@ -4,8 +4,8 @@ require("conform").setup({
 		python = { "ruff" },
 		javascript = { "prettier" },
 		rust = { "rustfmt --edition 2021" },
-		c = { "clangd" },
-		cpp = { "clangd" },
+		c = { "clang_format_custom" },
+		cpp = { "clang_format_custom" },
 		sql = { "sleek" },
 	},
 	formatters = {
@@ -13,6 +13,12 @@ require("conform").setup({
 			command = "sleek",
 			args = { "$FILENAME" },
 			stdin = false,
+		},
+		clang_format_custom = {
+			command = "clang-format",
+			args = {
+				"--style={IndentWidth: 4, UseTab: Never, ColumnLimit: 100}",
+			},
 		},
 	},
 })
@@ -61,7 +67,6 @@ require("nvim-treesitter.configs").setup({
 		-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
 		-- the name of the parser)
 		-- list of language that will be disabled
-		disable = { "c", "rust" },
 		-- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
 		disable = function(lang, buf)
 			local max_filesize = 100 * 1024 -- 100 KB
@@ -83,4 +88,4 @@ require("nvim-treesitter.configs").setup({
 vim.treesitter.language.register("mdx", "markdown")
 
 -- Autosession
-require('auto-session').setup()
+require("auto-session").setup()
