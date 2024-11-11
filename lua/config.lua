@@ -5,12 +5,17 @@ vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.opt.listchars = {
+	-- tab = "▏ ",
+	tab = '› ',
 	trail = "·",
+	extends = ">",
+	precedes = "<",
 }
+vim.opt.list = true
 vim.opt.clipboard = "unnamedplus" -- This is for using the system clipboard
 
 -- booleans
-vim.o.expandtab = true
+vim.o.expandtab = false
 vim.opt.termguicolors = true
 vim.wo.relativenumber = true
 vim.g.coq_settings = { auto_start = true }

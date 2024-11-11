@@ -49,6 +49,7 @@ return require("lazy").setup({
 	"kdheepak/lazygit.nvim",
 	"ellisonleao/glow.nvim",
 	"norcalli/nvim-colorizer.lua",
+	"lukas-reineke/indent-blankline.nvim",
 	"zbirenbaum/copilot.lua",
 	{
 		"folke/trouble.nvim",

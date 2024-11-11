@@ -17,7 +17,7 @@ require("conform").setup({
 		clang_format_custom = {
 			command = "clang-format",
 			args = {
-				"--style={IndentWidth: 4, UseTab: Never, ColumnLimit: 100}",
+				-- "--style={IndentWidth: 8, TabWidth: 8, UseTab: Always, ColumnLimit: 100}",
 			},
 		},
 	},

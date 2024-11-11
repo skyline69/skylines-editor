@@ -81,3 +81,6 @@ require("nvim-tree").setup({
 		side = "right",
 	},
 })
+
+require("ibl").setup({})
+

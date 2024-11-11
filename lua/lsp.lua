@@ -2,6 +2,7 @@ local M = {}
 
 local lsp = require("lspconfig")
 local cmp = require("cmp")
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 cmp.config.formatting = {
 	format = require("tailwindcss-colorizer-cmp").formatter,
@@ -30,18 +31,40 @@ function M.start_lsp()
 	})
 
 	lsp.gopls.setup({})
-	lsp.ruff_lsp.setup({})
+	lsp.ruff.setup({})
 	lsp.jdtls.setup({})
 	lsp.taplo.setup({})
 	lsp.fortls.setup({})
-	lsp.clangd.setup({})
+	lsp.clangd.setup({
+		cmd = { "clangd" },
+		capabilities = capabilities,
+	})
+	lsp.ts_ls.setup({
+		on_attach = on_attach,
+		root_dir = lsp.util.root_pattern("package.json"),
+		single_file_support = false,
+	})
 	lsp.sqls.setup({})
 	lsp.zls.setup({})
 	lsp.dockerls.setup({})
 	lsp.cssls.setup({})
+	lsp.eslint.setup({})
 	lsp.html.setup({})
 	lsp.svelte.setup({})
-	lsp.slint_lsp.setup({})
+	lsp.slint_lsp.setup({
+		cmd = {
+			"/opt/homebrew/opt/llvm/bin/clangd",
+			"--background-index",
+			"--clang-tidy",
+			"--completion-style=llvm",
+			"--header-insertion=iwyu",
+			"--header-insertion-decorators",
+			"--function-arg-placeholders",
+			"--fallback-style=llvm",
+			"--suggest-missing-includes",
+			"--cross-file-rename",
+		},
+	})
 	lsp.marksman.setup({})
 	lsp.pest_ls.setup({})
 	lsp.sourcekit.setup({
@@ -54,6 +77,7 @@ function M.start_lsp()
 		on_attach = on_attach,
 		capabilities = capabilities,
 	})
+	lsp.mesonlsp.setup({})
 end
 
 M.start_lsp()
