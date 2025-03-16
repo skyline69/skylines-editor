@@ -3,6 +3,7 @@ require("conform").setup({
 		lua = { "stylua" },
 		python = { "ruff" },
 		javascript = { "prettier" },
+		json = { "json_prettier" }, -- Using custom prettier config with tabs
 		rust = { "rustfmt --edition 2021" },
 		c = { "clang_format_custom" },
 		cpp = { "clang_format_custom" },
@@ -18,6 +19,18 @@ require("conform").setup({
 			command = "clang-format",
 			args = {
 				-- "--style={IndentWidth: 8, TabWidth: 8, UseTab: Always, ColumnLimit: 100}",
+			},
+		},
+		json_prettier = {
+			command = "prettier",
+			args = {
+				"--parser",
+				"json",
+				"--use-tabs",
+				"--tab-width",
+				"4",
+				"--stdin-filepath",
+				"$FILENAME",
 			},
 		},
 	},
