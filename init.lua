@@ -1,23 +1,4 @@
---local
-require("config")
-require("plugins")
-require("appearance")
-require("keymaps")
-require("lsp")
-require("nvim_cmp")
-require("formatting")
---libraries
-require("lualine").setup({
-	sections = { lualine_c = { require("auto-session.lib").current_session_name } },
-})
-require("mason").setup()
-require("mason-lspconfig").setup()
-require("crates").setup()
-require("gitsigns").setup()
-require("Comment").setup()
-require("neoscroll").setup()
-require("hex").setup()
-require("ibl").setup()
-require("glow").setup()
-require("renamer").setup()
-require('faster').setup()
+require("user.options")
+require("user.keymaps")
+require("user.autocmds")
+require("user.plugins") -- pulls in user.colors + user.lsp indirectly
