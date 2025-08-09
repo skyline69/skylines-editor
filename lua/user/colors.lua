@@ -14,11 +14,3 @@ vim.cmd.colorscheme("carbonfox")
 vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#ffffff", bg = palettes.carbonfox.sel0, bold = true })
 vim.api.nvim_set_hl(0, "TabLine", { fg = "#a0a0a0", bg = "NONE" })
 vim.api.nvim_set_hl(0, "TabLineFill", { bg = "NONE" })
-
--- Auto-switch to Melange for TS/JS
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-	callback = function()
-		vim.cmd.colorscheme("melange")
-	end,
-})

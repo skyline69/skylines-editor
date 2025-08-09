@@ -17,6 +17,9 @@ local servers = {
 	dockerls = {},
 	zls = {},
 	jsonls = {},
+	qmlls = {},
+	html = {},
+	elixirls = {}
 }
 
 local formatters = {
