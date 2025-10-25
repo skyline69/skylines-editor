@@ -12,22 +12,34 @@ end)
 
 -- Define your servers (same content you had), just data:
 local servers = {
-	lua_ls = { settings = { Lua = { completion = { callSnippet = "Replace" } } } },
+	lua_ls = {
+		settings = {
+			Lua = { diagnostics = {
+				globals = { "love", "vim" },
+			}, completion = { callSnippet = "Replace" } },
+		},
+	},
 	rust_analyzer = {},
-	clangd = {},
+	clangd = {
+		cmd = { "clangd", "--compile-commands-dir=build" },
+	},
 	pyright = {},
 	ts_ls = {},
 	gopls = {},
 	taplo = {},
 	svelte = {},
 	mesonlsp = {},
+	sui_move_analyzer = {
+		cmd = { "sui-move-analyzer" },
+		filetypes = { "move" },
+		root_markers = { "Move.toml", ".git" },
+	},
 	tailwindcss = {},
 	dockerls = {},
 	zls = {},
 	jsonls = {},
 	qmlls = {},
 	html = {},
-	elixirls = {},
 	csharp_ls = {},
 	yamlls = {
 		cmd = { "yaml-language-server", "--stdio" },
@@ -66,8 +78,17 @@ local fmt = {
 	"csharpier",
 }
 
+local ignore_servers = { "sui_move_analyzer" }
+
+local mason_servers = {}
+for name, _ in pairs(servers) do
+	if not vim.tbl_contains(ignore_servers, name) then
+		table.insert(mason_servers, name)
+	end
+end
+
 require("mason-tool-installer").setup({
-	ensure_installed = vim.tbl_extend("force", vim.tbl_keys(servers), fmt),
+	ensure_installed = vim.tbl_extend("force", mason_servers, fmt),
 })
 
 -- If you want Mason to auto-enable installed servers, you can also use mason-lspconfig
