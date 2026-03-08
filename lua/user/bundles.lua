@@ -25,10 +25,12 @@ local bundles = {
 					config = function()
 						require("mini.ai").setup({ n_lines = 500 })
 						require("mini.surround").setup()
-						local st = require("mini.statusline")
-						st.setup({ use_icons = vim.g.have_nerd_font })
-						st.section_location = function()
-							return "%2l:%-2v"
+						if not vim.tbl_contains(vim.g.skyline_active_qol or {}, "lualine") then
+							local st = require("mini.statusline")
+							st.setup({ use_icons = vim.g.have_nerd_font })
+							st.section_location = function()
+								return "%2l:%-2v"
+							end
 						end
 					end,
 				},
@@ -361,7 +363,7 @@ function M.resolve_plugins(enabled_ids, selected_languages, selected_qol)
 		end
 	end
 
-	local resolved_qol = qol.resolve(selected_qol, selected_languages)
+	local resolved_qol = qol.resolve(selected_qol, selected_languages, requested_ids)
 	for _, spec in ipairs(resolved_qol.specs) do
 		specs[#specs + 1] = spec
 	end

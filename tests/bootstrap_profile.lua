@@ -24,22 +24,33 @@ local qol = require("user.qol")
 assert(profile.exists() == false, "profile should not exist before ensure()")
 
 local ensured = profile.ensure({ headless = true })
-assert(ensured.version == 3, "headless bootstrap should write the v3 schema")
+assert(ensured.version == 4, "headless bootstrap should write the v4 schema")
 assert(vim.deep_equal(ensured.features, { "core" }), "headless bootstrap should default to the minimal feature profile")
 assert(vim.deep_equal(ensured.languages, {}), "headless bootstrap should not enable any languages")
-assert(vim.deep_equal(ensured.qol, {}), "headless bootstrap should not enable any QoL items")
+assert(vim.tbl_contains(ensured.qol, "lualine"), "headless bootstrap should enable lualine by default")
+assert(vim.deep_equal(ensured.disabled_qol, {}), "headless bootstrap should not disable any default QoL items")
 assert(profile.exists(), "ensure() should persist the profile")
 
 local migrated = profile.save({ version = 1, bundles = { "core", "search", "lsp" }, qol = { "crates" } })
 assert(vim.deep_equal(migrated.features, { "core", "search", "lsp" }), "v1 bundle profiles should migrate into feature selections")
 assert(vim.deep_equal(migrated.languages, {}), "v1 bundle profiles should default to no language selections")
-assert(vim.deep_equal(migrated.qol, {}), "language-gated QoL items should be removed when their language is not selected")
+assert(vim.deep_equal(migrated.qol, { "lualine" }), "migration should keep default-enabled QoL items while dropping invalid gated items")
 
 local loaded = profile.load()
-assert(loaded.version == 3, "saved profile should round-trip as schema version 3")
+assert(loaded.version == 4, "saved profile should round-trip as schema version 4")
 assert(vim.deep_equal(loaded.features, { "core", "search", "lsp" }), "saved profile should preserve selected features")
 assert(vim.deep_equal(loaded.languages, {}), "saved profile should preserve selected languages")
-assert(vim.deep_equal(loaded.qol, {}), "saved profile should preserve selected QoL items")
+assert(vim.tbl_contains(loaded.qol, "lualine"), "saved profile should preserve default-enabled QoL items")
+
+local opted_out = profile.save({
+	version = 4,
+	features = { "core" },
+	languages = {},
+	qol = {},
+	disabled_qol = { "lualine" },
+})
+assert(not vim.tbl_contains(opted_out.qol, "lualine"), "default-enabled QoL items should be removable through disabled_qol")
+assert(vim.tbl_contains(opted_out.disabled_qol, "lualine"), "disabled default QoL items should round-trip")
 
 local selected_languages = { "lua", "python", "rust" }
 local resolved = languages.resolve(selected_languages)

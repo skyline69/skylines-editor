@@ -1,6 +1,6 @@
 local M = {}
 
-local PROFILE_VERSION = 3
+local PROFILE_VERSION = 4
 
 local function profile_path()
 	return vim.env.SKYLINE_PROFILE_PATH or (vim.fn.stdpath("state") .. "/skyline-profile.json")
@@ -11,7 +11,8 @@ function M.default_minimal()
 		version = PROFILE_VERSION,
 		features = { "core" },
 		languages = {},
-		qol = {},
+		qol = require("user.qol").default_selected(),
+		disabled_qol = {},
 	}
 end
 
@@ -20,7 +21,8 @@ function M.default_popular()
 		version = PROFILE_VERSION,
 		features = { "core", "ui", "search", "tree", "git", "syntax" },
 		languages = { "lua", "python", "typescript", "go", "rust", "json", "yaml", "docker" },
-		qol = { "autoclose", "todo_comments", "trouble", "spectre", "hex", "crates" },
+		qol = { "lualine", "autoclose", "todo_comments", "trouble", "spectre", "hex", "crates" },
+		disabled_qol = {},
 	}
 end
 
@@ -32,7 +34,9 @@ local function normalize(profile)
 	local seen_features = { core = true }
 	local seen_languages = {}
 	local seen_qol = {}
+	local seen_disabled_qol = {}
 	local feature_source = {}
+	local default_qol = require("user.qol").default_selected()
 
 	if type(profile) ~= "table" then
 		return normalized
@@ -58,8 +62,27 @@ local function normalize(profile)
 		end
 	end
 
+	for _, id in ipairs(profile.disabled_qol or {}) do
+		if qol_mod.is_valid(id) and not seen_disabled_qol[id] and qol_mod.is_default_enabled(id) then
+			seen_disabled_qol[id] = true
+			normalized.disabled_qol[#normalized.disabled_qol + 1] = id
+		end
+	end
+
+	normalized.qol = {}
+	for _, id in ipairs(default_qol) do
+		if not seen_disabled_qol[id] then
+			seen_qol[id] = true
+			normalized.qol[#normalized.qol + 1] = id
+		end
+	end
+
 	for _, id in ipairs(profile.qol or {}) do
-		if qol_mod.is_valid(id) and not seen_qol[id] and qol_mod.is_available(id, normalized.languages) then
+		if qol_mod.is_valid(id)
+			and not seen_qol[id]
+			and not seen_disabled_qol[id]
+			and qol_mod.is_available(id, normalized.languages, normalized.features)
+		then
 			seen_qol[id] = true
 			normalized.qol[#normalized.qol + 1] = id
 		end

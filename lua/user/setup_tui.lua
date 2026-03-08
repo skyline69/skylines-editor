@@ -20,6 +20,7 @@ local function copy_profile(profile)
 		features = vim.deepcopy(normalized.features),
 		languages = vim.deepcopy(normalized.languages),
 		qol = vim.deepcopy(normalized.qol),
+		disabled_qol = vim.deepcopy(normalized.disabled_qol or {}),
 	}
 end
 
@@ -49,6 +50,10 @@ local function toggle(values, value)
 	return next_values
 end
 
+local function default_qol_enabled(profile, id)
+	return qol.is_default_enabled(id) and not contains(profile.disabled_qol or {}, id)
+end
+
 local function pad(str, width)
 	local text = str or ""
 	if #text >= width then
@@ -64,6 +69,35 @@ local function page_index(state, page_id)
 		end
 	end
 	return 1
+end
+
+local function requirement_labels(ids, items)
+	local labels = {}
+	for _, id in ipairs(ids or {}) do
+		for _, item in ipairs(items) do
+			if item.id == id then
+				labels[#labels + 1] = item.label
+				break
+			end
+		end
+	end
+	return labels
+end
+
+local function qol_reason(item)
+	local reasons = {}
+	local language_labels = requirement_labels(item.requires_languages, languages.get_all())
+	local feature_labels = requirement_labels(item.requires_features, bundles.get_all())
+	if #language_labels > 0 then
+		reasons[#reasons + 1] = "Requires " .. table.concat(language_labels, ", ")
+	end
+	if #feature_labels > 0 then
+		reasons[#reasons + 1] = "Requires " .. table.concat(feature_labels, ", ")
+	end
+	if item.note then
+		reasons[#reasons + 1] = item.note
+	end
+	return #reasons > 0 and table.concat(reasons, "  ") or nil
 end
 
 local function get_items(state)
@@ -98,18 +132,14 @@ local function get_items(state)
 	if pages[state.page].id == "qol" then
 		local items = {}
 		for _, item in ipairs(qol.get_all()) do
-			local available = qol.is_available(item.id, state.profile.languages)
-			local reason = nil
-			if not available and item.requires_languages and #item.requires_languages > 0 then
-				reason = "Requires " .. table.concat(item.requires_languages, ", ")
-			end
+			local available = qol.is_available(item.id, state.profile.languages, state.profile.features)
 			items[#items + 1] = {
 				id = item.id,
 				label = item.label,
 				description = item.description,
-				selected = contains(state.profile.qol, item.id),
+				selected = contains(state.profile.qol, item.id) or default_qol_enabled(state.profile, item.id),
 				available = available,
-				reason = reason,
+				reason = qol_reason(item),
 			}
 		end
 		return items
@@ -264,7 +294,16 @@ local function toggle_current(state)
 		state.profile = copy_profile(state.profile)
 	elseif pages[state.page].id == "qol" then
 		if item.available ~= false then
-			state.profile.qol = toggle(state.profile.qol, item.id)
+			if qol.is_default_enabled(item.id) then
+				if default_qol_enabled(state.profile, item.id) then
+					state.profile.disabled_qol = toggle(state.profile.disabled_qol or {}, item.id)
+					state.profile.qol = toggle(state.profile.qol, item.id)
+				else
+					state.profile.disabled_qol = toggle(state.profile.disabled_qol or {}, item.id)
+				end
+			else
+				state.profile.qol = toggle(state.profile.qol, item.id)
+			end
 		end
 	end
 
