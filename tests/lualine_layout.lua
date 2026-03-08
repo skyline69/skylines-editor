@@ -36,3 +36,45 @@ assert(root_name == vim.fs.basename(root), "project_root should show the project
 assert(file_path == "apps/api/src/example.ts", "file_path should be relative to the detected project root")
 
 vim.cmd.cd(old_cwd)
+
+assert(statusline.lsp_activity_status() == "", "lsp_activity_status should be empty when noice progress is unavailable")
+
+package.loaded["noice.lsp.progress"] = {
+	_progress = {
+		["rust-analyzer:1"] = {
+			opts = {
+				progress = {
+					kind = "report",
+					title = "Building CrateGraph",
+				},
+			},
+		},
+	},
+}
+
+assert(statusline.lsp_activity_status() == "lsp...", "lsp_activity_status should collapse active progress into a minimal marker")
+
+package.loaded["noice.lsp.progress"] = {
+	_progress = {
+		["rust-analyzer:1"] = {
+			opts = {
+				progress = {
+					kind = "end",
+					title = "Building CrateGraph",
+				},
+			},
+		},
+	},
+}
+
+assert(statusline.lsp_activity_status() == "", "lsp_activity_status should hide completed progress")
+
+local has_activity_component = false
+for _, component in ipairs(opts.sections.lualine_x) do
+	if type(component) == "table" and component[1] == statusline.lsp_activity_status then
+		has_activity_component = true
+		break
+	end
+end
+
+assert(has_activity_component, "lualine_x should include the transient LSP activity component")

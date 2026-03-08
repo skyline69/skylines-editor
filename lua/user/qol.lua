@@ -201,6 +201,12 @@ local items = {
 							["vim.lsp.util.stylize_markdown"] = true,
 						},
 					},
+					routes = {
+						{
+							filter = { event = "lsp", kind = "progress" },
+							opts = { skip = true },
+						},
+					},
 					presets = {
 						bottom_search = true,
 						command_palette = true,
