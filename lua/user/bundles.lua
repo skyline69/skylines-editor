@@ -173,7 +173,14 @@ local bundles = {
 				},
 				{
 					"sindrets/diffview.nvim",
-					cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory", "DiffviewFocusFiles", "DiffviewToggleFiles", "DiffviewRefresh" },
+					cmd = {
+						"DiffviewOpen",
+						"DiffviewClose",
+						"DiffviewFileHistory",
+						"DiffviewFocusFiles",
+						"DiffviewToggleFiles",
+						"DiffviewRefresh",
+					},
 					config = true,
 				},
 				{
@@ -255,7 +262,8 @@ local bundles = {
 						{
 							"L3MON4D3/LuaSnip",
 							version = "2.*",
-							build = (vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0) and nil or "make install_jsregexp",
+							build = (vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0) and nil
+								or "make install_jsregexp",
 							opts = {},
 						},
 					},
@@ -294,9 +302,24 @@ local bundles = {
 									enableTestLenses = false,
 								}),
 								on_attach = function(_, bufnr)
-									vim.keymap.set("n", "<space>fp", ":ElixirFromPipe<cr>", { buffer = bufnr, noremap = true })
-									vim.keymap.set("n", "<space>tp", ":ElixirToPipe<cr>", { buffer = bufnr, noremap = true })
-									vim.keymap.set("v", "<space>em", ":ElixirExpandMacro<cr>", { buffer = bufnr, noremap = true })
+									vim.keymap.set(
+										"n",
+										"<space>fp",
+										":ElixirFromPipe<cr>",
+										{ buffer = bufnr, noremap = true }
+									)
+									vim.keymap.set(
+										"n",
+										"<space>tp",
+										":ElixirToPipe<cr>",
+										{ buffer = bufnr, noremap = true }
+									)
+									vim.keymap.set(
+										"v",
+										"<space>em",
+										":ElixirExpandMacro<cr>",
+										{ buffer = bufnr, noremap = true }
+									)
 								end,
 							},
 							projectionist = {
