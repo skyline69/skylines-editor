@@ -161,6 +161,56 @@ local items = {
 			},
 		},
 	},
+	notify = {
+		label = "Notify",
+		description = "Animated notifications with cleaner message windows.",
+		specs = {
+			{
+				"rcarriga/nvim-notify",
+				event = "VeryLazy",
+				opts = {
+					fps = 60,
+					render = "wrapped-compact",
+					stages = "fade_in_slide_out",
+					timeout = 2500,
+					top_down = false,
+				},
+				config = function(_, opts)
+					local notify = require("notify")
+					notify.setup(opts)
+					vim.notify = notify
+				end,
+			},
+		},
+	},
+	noice = {
+		label = "Noice",
+		description = "Polished command line, popups, and message history.",
+		specs = {
+			{
+				"folke/noice.nvim",
+				event = "VeryLazy",
+				dependencies = {
+					"MunifTanjim/nui.nvim",
+				},
+				opts = {
+					lsp = {
+						progress = { enabled = false },
+						override = {
+							["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+							["vim.lsp.util.stylize_markdown"] = true,
+						},
+					},
+					presets = {
+						bottom_search = true,
+						command_palette = true,
+						long_message_to_split = true,
+						lsp_doc_border = true,
+					},
+				},
+			},
+		},
+	},
 	tsc = {
 		label = "TSC",
 		description = "Project-wide TypeScript type-checking.",
@@ -285,6 +335,8 @@ local ordered_ids = {
 	"lualine",
 	"illuminate",
 	"undo_glow",
+	"notify",
+	"noice",
 	"tsc",
 	"ts_error_translator",
 	"package_info",

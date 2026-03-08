@@ -24,6 +24,8 @@ for _, id in ipairs({
 	"lualine",
 	"illuminate",
 	"undo_glow",
+	"notify",
+	"noice",
 	"tsc",
 	"ts_error_translator",
 	"package_info",
@@ -52,19 +54,29 @@ local git_enabled = qol.resolve({ "commitmate" }, {}, { "core", "git" })
 assert(vim.tbl_contains(git_enabled.selected, "commitmate"), "CommitMate should enable when the Git feature is selected")
 assert(find_repo(git_enabled.specs, "ajatdarojat45/commitmate.nvim"), "CommitMate should add its plugin spec")
 
-local general_qol_specs = bundles.resolve_plugins({ "core" }, {}, { "colorizer", "lualine", "illuminate", "undo_glow" })
+local ui_qol = qol.resolve({ "notify", "noice" }, {}, {})
+assert(vim.tbl_contains(ui_qol.selected, "notify"), "Notify should resolve as a general QoL item")
+assert(vim.tbl_contains(ui_qol.selected, "noice"), "Noice should resolve as a general QoL item")
+assert(find_repo(ui_qol.specs, "rcarriga/nvim-notify"), "Notify should add nvim-notify")
+assert(find_repo(ui_qol.specs, "folke/noice.nvim"), "Noice should add noice.nvim")
+
+local general_qol_specs = bundles.resolve_plugins({ "core" }, {}, { "colorizer", "lualine", "illuminate", "undo_glow", "notify", "noice" })
 assert(find_repo(general_qol_specs, "catgoose/nvim-colorizer.lua"), "General QoL should include colorizer")
 assert(find_repo(general_qol_specs, "nvim-lualine/lualine.nvim"), "General QoL should include lualine")
 assert(find_repo(general_qol_specs, "RRethy/vim-illuminate"), "General QoL should include vim-illuminate")
 assert(find_repo(general_qol_specs, "y3owk1n/undo-glow.nvim"), "General QoL should include undo-glow")
+assert(find_repo(general_qol_specs, "rcarriga/nvim-notify"), "General QoL should include nvim-notify")
+assert(find_repo(general_qol_specs, "folke/noice.nvim"), "General QoL should include noice.nvim")
 
 local normalized = profile.normalize({
 	version = 3,
 	features = { "core" },
 	languages = {},
-	qol = { "commitmate", "tsc", "lualine" },
+	qol = { "commitmate", "tsc", "lualine", "notify", "noice" },
 })
 assert(vim.tbl_contains(normalized.qol, "lualine"), "Valid general QoL items should survive normalization")
+assert(vim.tbl_contains(normalized.qol, "notify"), "Notify should survive normalization as a general QoL item")
+assert(vim.tbl_contains(normalized.qol, "noice"), "Noice should survive normalization as a general QoL item")
 assert(not vim.tbl_contains(normalized.qol, "commitmate"), "Feature-gated QoL items should be dropped without the required feature")
 assert(not vim.tbl_contains(normalized.qol, "tsc"), "Language-gated QoL items should be dropped without the required language")
 
