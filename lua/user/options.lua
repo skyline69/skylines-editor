@@ -24,6 +24,7 @@ opt.relativenumber = true
 opt.scrolloff = 3
 opt.shiftwidth = 4
 opt.signcolumn = "yes"
+opt.softtabstop = -1
 opt.smartcase = true
 opt.splitbelow = true
 opt.splitright = true

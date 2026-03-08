@@ -1,6 +1,8 @@
 -----------------------------------------------------------------------
 --  LSP servers + formatter tooling
 -----------------------------------------------------------------------
+local profile = require("user.profile").ensure()
+local selected = require("user.languages").resolve(profile.languages)
 
 -- cmp capabilities:
 -- On Nvim 0.11+ with vim.lsp.config, most completion plugins don’t require
@@ -60,47 +62,19 @@ if maybe_caps then
 end
 
 -- Register configs with the native API
-for name, cfg in pairs(servers) do
+for _, name in ipairs(selected.servers) do
+	local cfg = servers[name]
+	if cfg then
 	-- Merge your defaults into each server’s config
-	local merged = vim.tbl_deep_extend("force", {}, defaults, cfg or {})
-	vim.lsp.config[name] = merged
-end
-
--- Ensure tools/servers are installed (Mason)
-local fmt = {
-	"stylua", -- Lua
-	"clang-format", -- C / C++
-	"yamlfmt", -- YAML
-	"jq", -- JSON
-	"goimports", -- Go
-	"golines", -- Go
-	"black", -- Python
-	"csharpier",
-}
-
-local ignore_servers = { "sui_move_analyzer" }
-
-local mason_servers = {}
-for name, _ in pairs(servers) do
-	if not vim.tbl_contains(ignore_servers, name) then
-		table.insert(mason_servers, name)
+		local merged = vim.tbl_deep_extend("force", {}, defaults, cfg)
+		vim.lsp.config[name] = merged
 	end
 end
 
 require("mason-tool-installer").setup({
-	ensure_installed = vim.tbl_extend("force", mason_servers, fmt),
+	ensure_installed = selected.mason_packages,
 })
 
--- If you want Mason to auto-enable installed servers, you can also use mason-lspconfig
--- (not required). Otherwise, just enable explicitly:
-vim.lsp.enable(vim.tbl_keys(servers))
-
--- macOS-only: enable SourceKit-LSP (not managed by Mason)
-if vim.loop.os_uname().sysname == "Darwin" then
-	vim.lsp.config.sourcekit = vim.tbl_deep_extend("force", {}, defaults, {
-		cmd = { "sourcekit-lsp" }, -- requires Xcode or Swift toolchain
-		filetypes = { "swift" },
-		root_markers = { "Package.swift", ".git" },
-	})
-	vim.lsp.enable({ "sourcekit" })
+if #selected.servers > 0 then
+	vim.lsp.enable(selected.servers)
 end

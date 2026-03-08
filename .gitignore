@@ -1,4 +1,5 @@
 lazy-lock.json
+.worktrees/
 .DS_Store
 # Compiled Lua sources
 luac.out
