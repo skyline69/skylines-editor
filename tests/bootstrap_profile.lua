@@ -87,8 +87,19 @@ local function has_repo(specs, repo)
 	return false
 end
 
+local function find_repo(specs, repo)
+	for _, spec in ipairs(specs) do
+		if spec == repo or spec[1] == repo then
+			return spec
+		end
+	end
+	return nil
+end
+
 assert(not has_repo(minimal_specs, "neovim/nvim-lspconfig"), "minimal feature profile should omit LSP infrastructure")
 assert(has_repo(language_specs, "neovim/nvim-lspconfig"), "language selections should pull in LSP infrastructure")
+local lsp_spec = assert(find_repo(language_specs, "neovim/nvim-lspconfig"), "language selections should include the LSP spec")
+assert(not has_repo(lsp_spec.dependencies or {}, "j-hui/fidget.nvim"), "language selections should not pull in fidget progress UI")
 assert(has_repo(feature_specs, "nvim-telescope/telescope.nvim"), "feature selections should still add their plugins")
 assert(has_repo(general_qol_specs, "windwp/nvim-autopairs"), "general QoL selections should add their plugins")
 assert(not has_repo(general_qol_specs, "saecki/crates.nvim"), "language-gated QoL plugins should stay disabled without their language")
