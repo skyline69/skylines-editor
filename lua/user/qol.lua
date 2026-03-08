@@ -173,7 +173,7 @@ local items = {
 					render = "wrapped-compact",
 					stages = "fade_in_slide_out",
 					timeout = 2500,
-					top_down = false,
+					top_down = true,
 				},
 				config = function(_, opts)
 					local notify = require("notify")
