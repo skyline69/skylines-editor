@@ -56,9 +56,9 @@ end, { desc = "Toggle file tree", silent = true })
 
 -- Format buffer (Conform) --------------------------------------------
 map("n", "<leader>mf", function()
-	local ok, conform = pcall(require, "conform")
+	local ok, formatting = pcall(require, "user.formatting")
 	if ok then
-		conform.format({ async = true, lsp_fallback = true })
+		formatting.format({ async = true })
 	else
 		notify("Conform not installed")
 	end

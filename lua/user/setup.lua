@@ -9,6 +9,8 @@ local function open_setup(opts)
 end
 
 function M.setup()
+	require("user.formatting").setup()
+
 	vim.api.nvim_create_user_command("SkylineSetup", function()
 		open_setup()
 	end, { desc = "Open Skyline setup" })

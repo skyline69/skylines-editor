@@ -230,18 +230,11 @@ local bundles = {
 				{
 					"stevearc/conform.nvim",
 					event = { "BufWritePre" },
-					opts = {
-						formatters_by_ft = {
-							lua = { "stylua" },
-							yaml = { "yamlfmt" },
-							yml = { "yamlfmt" },
-							json = { "jq" },
-							go = { "goimports", "golines" },
-							python = { "black" },
-							c = { "clang-format" },
-							cpp = { "clang-format" },
-						},
-					},
+					config = function()
+						local formatting = require("user.formatting")
+						require("conform").setup(formatting.opts())
+						formatting.setup()
+					end,
 				},
 				{
 					"saghen/blink.cmp",
