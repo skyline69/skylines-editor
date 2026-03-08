@@ -28,6 +28,7 @@ opt.softtabstop = -1
 opt.smartcase = true
 opt.splitbelow = true
 opt.splitright = true
+opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 opt.tabstop = 4
 opt.termguicolors = true
 opt.timeoutlen = 3000

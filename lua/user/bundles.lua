@@ -71,9 +71,19 @@ local bundles = {
 				{ "stevearc/resession.nvim", lazy = true, opts = {} },
 				{
 					"rmagatti/auto-session",
-					event = "VeryLazy",
+					lazy = false,
 					opts = {
+						auto_save = true,
+						auto_restore = true,
+						auto_restore_last_session = false,
+						cwd_change_handling = false,
+						git_use_branch_name = false,
+						args_allow_single_directory = true,
+						args_allow_files_auto_save = false,
+						lazy_support = true,
 						suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+						bypass_save_filetypes = { "alpha" },
+						close_filetypes_on_save = { "checkhealth" },
 					},
 				},
 			}

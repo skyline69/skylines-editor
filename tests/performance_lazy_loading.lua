@@ -20,8 +20,9 @@ end
 local specs = bundles.resolve_plugins({ "core", "ui", "search", "tree", "git", "syntax" }, {}, {})
 
 local auto_session = assert(find_repo(specs, "rmagatti/auto-session"), "auto-session spec should exist")
-assert(auto_session.lazy ~= false, "auto-session should not stay eager at startup")
-assert(auto_session.event == "VeryLazy" or auto_session.cmd, "auto-session should lazy-load on a cold trigger")
+assert(auto_session.lazy == false, "auto-session should load at startup so sessions can restore on VimEnter")
+assert(auto_session.opts.auto_restore == true, "auto-session should restore sessions on startup")
+assert(auto_session.opts.auto_save == true, "auto-session should save sessions on exit")
 
 local telescope = assert(find_repo(specs, "nvim-telescope/telescope.nvim"), "telescope spec should exist")
 assert(telescope.event ~= "VimEnter", "telescope should not load on VimEnter")
