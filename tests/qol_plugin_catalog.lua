@@ -19,6 +19,15 @@ local function find_repo(specs, repo)
 	return nil
 end
 
+local function has_skip_route(routes, event, kind)
+	for _, route in ipairs(routes or {}) do
+		if route.filter and route.filter.event == event and route.filter.kind == kind then
+			return route.opts and route.opts.skip == true
+		end
+	end
+	return false
+end
+
 for _, id in ipairs({
 	"colorizer",
 	"lualine",
@@ -60,6 +69,7 @@ assert(vim.tbl_contains(ui_qol.selected, "noice"), "Noice should resolve as a ge
 assert(find_repo(ui_qol.specs, "rcarriga/nvim-notify"), "Notify should add nvim-notify")
 local noice_spec = assert(find_repo(ui_qol.specs, "folke/noice.nvim"), "Noice should add noice.nvim")
 assert(noice_spec.opts.lsp.progress.enabled == true, "Noice should enable LSP progress UI")
+assert(has_skip_route(noice_spec.opts.routes, "lsp", "progress"), "Noice should suppress popup rendering for LSP progress")
 
 local general_qol_specs = bundles.resolve_plugins({ "core" }, {}, { "colorizer", "lualine", "illuminate", "undo_glow", "notify", "noice" })
 assert(find_repo(general_qol_specs, "catgoose/nvim-colorizer.lua"), "General QoL should include colorizer")

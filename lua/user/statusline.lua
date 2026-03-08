@@ -179,6 +179,22 @@ function M.lsp_status()
 	return "lsp:" .. table.concat(names, ",")
 end
 
+function M.lsp_activity_status()
+	local ok, progress = pcall(require, "noice.lsp.progress")
+	if not ok or type(progress._progress) ~= "table" then
+		return ""
+	end
+
+	for _, message in pairs(progress._progress) do
+		local state = message and message.opts and message.opts.progress
+		if type(state) == "table" and state.kind ~= "end" then
+			return "lsp..."
+		end
+	end
+
+	return ""
+end
+
 function M.theme()
 	return {
 		normal = {
@@ -276,6 +292,7 @@ function M.opts()
 					update_in_insert = false,
 				},
 				{ M.formatter_status, color = { fg = colors.orange } },
+				{ M.lsp_activity_status, color = { fg = colors.yellow } },
 				{ M.lsp_status, color = { fg = colors.cyan } },
 				{ M.package_status, color = { fg = colors.green } },
 				{ "filetype", colored = true, icon_only = false },
