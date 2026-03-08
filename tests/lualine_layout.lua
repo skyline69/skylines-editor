@@ -39,108 +39,15 @@ vim.cmd.cd(old_cwd)
 
 assert(statusline.lsp_activity_status() == "", "lsp_activity_status should be empty when noice progress is unavailable")
 
-package.loaded["noice.lsp.progress"] = {
-	_progress = {
-		["rust-analyzer:1"] = {
-			opts = {
-				progress = {
-					kind = "report",
-					title = "Building CrateGraph",
-				},
-			},
-		},
-	},
-}
-
-assert(statusline.lsp_activity_status() == "lsp...", "lsp_activity_status should collapse active progress into a minimal marker")
-
-package.loaded["noice.lsp.progress"] = {
-	_progress = {
-		["rust-analyzer:1"] = {
-			opts = {
-				progress = {
-					kind = "end",
-					title = "Building CrateGraph",
-				},
-			},
-		},
-	},
-}
-
-local notifications = {}
-local original_notify = vim.notify
-local original_get_client_by_id = vim.lsp.get_client_by_id
-
-vim.notify = function(msg, level, opts)
-	notifications[#notifications + 1] = {
-		msg = msg,
-		level = level,
-		opts = opts,
-	}
-end
-
-assert(statusline.lsp_activity_status() == "", "lsp_activity_status should hide completed progress")
-assert(#notifications == 1, "completed progress should emit a completion notification")
-assert(notifications[1].msg == "LSP ready", "completed progress without a resolved client should fall back to a generic message")
-
-notifications = {}
-
-vim.lsp.get_client_by_id = function(id)
-	if id == 7 then
-		return { name = "rust_analyzer" }
-	end
-	return nil
-end
-
-package.loaded["noice.lsp.progress"] = {
-	_progress = {
-		["rust-analyzer:2"] = {
-			opts = {
-				progress = {
-					id = "rust-analyzer:2",
-					client_id = 7,
-					kind = "report",
-					title = "Indexing",
-				},
-			},
-		},
-	},
-}
-
-assert(statusline.lsp_activity_status() == "lsp...", "active progress should still render the transient status")
-assert(#notifications == 0, "active progress should not emit a completion notification")
-
-package.loaded["noice.lsp.progress"] = {
-	_progress = {
-		["rust-analyzer:2"] = {
-			opts = {
-				progress = {
-					id = "rust-analyzer:2",
-					client_id = 7,
-					kind = "end",
-					title = "Indexing",
-				},
-			},
-		},
-	},
-}
-
-assert(statusline.lsp_activity_status() == "", "completed progress should disappear from the transient status")
-assert(#notifications == 1, "completed progress should emit one completion notification")
-assert(notifications[1].msg == "rust_analyzer ready", "completion notification should stay compact and client-focused")
-
-assert(statusline.lsp_activity_status() == "", "re-rendering completed progress should stay hidden")
-assert(#notifications == 1, "completed progress should not emit duplicate notifications")
-
-vim.notify = original_notify
-vim.lsp.get_client_by_id = original_get_client_by_id
-
 local has_activity_component = false
+local has_client_component = false
 for _, component in ipairs(opts.sections.lualine_x) do
 	if type(component) == "table" and component[1] == statusline.lsp_activity_status then
 		has_activity_component = true
-		break
+	elseif type(component) == "table" and component[1] == statusline.lsp_status then
+		has_client_component = true
 	end
 end
 
 assert(has_activity_component, "lualine_x should include the transient LSP activity component")
+assert(has_client_component, "lualine_x should include the stable LSP client component")

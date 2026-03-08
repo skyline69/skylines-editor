@@ -1,4 +1,5 @@
 local M = {}
+local lsp_ui = require("user.lsp_ui")
 
 local colors = {
 	bg = "#10141b",
@@ -62,8 +63,6 @@ local mode_names = {
 	["!"] = "SHELL",
 	t = "TERMINAL",
 }
-
-local completed_lsp_progress = {}
 
 local function current_buf(bufnr)
 	return bufnr or vim.api.nvim_get_current_buf()
@@ -181,56 +180,8 @@ function M.lsp_status()
 	return "lsp:" .. table.concat(names, ",")
 end
 
-local function lsp_ready_message(state)
-	local client_name = state.client
-
-	if not client_name and state.client_id then
-		local client = vim.lsp.get_client_by_id(state.client_id)
-		client_name = client and client.name or nil
-	end
-
-	return (client_name or "LSP") .. " ready"
-end
-
-local function sync_lsp_completion_notifications(progress_items)
-	local present = {}
-
-	for id, message in pairs(progress_items) do
-		local state = message and message.opts and message.opts.progress
-		local progress_id = type(state) == "table" and (state.id or id) or id
-		present[progress_id] = true
-
-		if type(state) == "table" and state.kind == "end" and not completed_lsp_progress[progress_id] then
-			completed_lsp_progress[progress_id] = true
-			vim.notify(lsp_ready_message(state), vim.log.levels.INFO, { title = "LSP" })
-		elseif type(state) == "table" and state.kind ~= "end" then
-			completed_lsp_progress[progress_id] = nil
-		end
-	end
-
-	for progress_id in pairs(completed_lsp_progress) do
-		if not present[progress_id] then
-			completed_lsp_progress[progress_id] = nil
-		end
-	end
-end
-
 function M.lsp_activity_status()
-	local ok, progress = pcall(require, "noice.lsp.progress")
-	if not ok or type(progress._progress) ~= "table" then
-		return ""
-	end
-
-	sync_lsp_completion_notifications(progress._progress)
-
-	for _, message in pairs(progress._progress) do
-		local state = message and message.opts and message.opts.progress
-		if type(state) == "table" and state.kind ~= "end" then
-			return "lsp..."
-		end
-	end
-
-	return ""
+	return lsp_ui.activity_status()
 end
 
 function M.theme()
