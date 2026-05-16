@@ -79,9 +79,34 @@ local function dirname(path)
 	return vim.fs.dirname(path)
 end
 
+local function has_root_marker(path)
+	for _, marker in ipairs(root_markers) do
+		if (vim.uv or vim.loop).fs_stat(vim.fs.joinpath(path, marker)) then
+			return true
+		end
+	end
+	return false
+end
+
+local function find_root(path)
+	local current = path
+	while current and current ~= "" do
+		if has_root_marker(current) then
+			return current
+		end
+
+		local parent = vim.fs.dirname(current)
+		if not parent or parent == current then
+			return nil
+		end
+		current = parent
+	end
+	return nil
+end
+
 function M.project_root_path(bufnr)
 	local file = current_file(bufnr)
-	local root = vim.fs.root(dirname(file), root_markers)
+	local root = find_root(dirname(file))
 	return root or vim.uv.cwd()
 end
 
@@ -167,9 +192,14 @@ function M.formatter_status()
 end
 
 function M.lsp_status()
-	local clients = vim.lsp.get_clients({ bufnr = current_buf() })
-	if #clients == 0 then
+	local bufnr = current_buf()
+	if vim.bo[bufnr].buftype ~= "" or vim.bo[bufnr].filetype == "" then
 		return ""
+	end
+
+	local clients = vim.lsp.get_clients({ bufnr = bufnr })
+	if #clients == 0 then
+		return "lsp:…"
 	end
 
 	local names = {}

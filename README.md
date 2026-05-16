@@ -17,6 +17,6 @@
 
 ## Prequisites
 - [NeoVim](https://neovim.io/)
-- [Lazy](https://github.com/folke/lazy.nvim)(Package Manager)
+- Native `vim.pack` on Neovim 0.12+, with [Lazy](https://github.com/folke/lazy.nvim) used as the fallback package manager on older versions
 - A [NerdFont](https://www.nerdfonts.com/)
 - <s>Motivation to install everything</s> Installs everything itself!

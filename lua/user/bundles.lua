@@ -51,7 +51,8 @@ local bundles = {
 				},
 				{
 					"goolord/alpha-nvim",
-					event = "VimEnter",
+					lazy = false,
+					priority = 800,
 					cond = function()
 						return vim.fn.argc() == 0
 					end,
@@ -199,7 +200,6 @@ local bundles = {
 				{
 					"nvim-treesitter/nvim-treesitter",
 					build = ":TSUpdate",
-					main = "nvim-treesitter",
 					opts = {
 						ensure_installed = {
 							"bash",
@@ -218,6 +218,9 @@ local bundles = {
 						highlight = { enable = true, additional_vim_regex_highlighting = { "ruby" } },
 						indent = { enable = false, disable = { "ruby" } },
 					},
+					config = function(_, opts)
+						require("user.treesitter").setup(opts)
+					end,
 				},
 				{
 					"MeanderingProgrammer/render-markdown.nvim",

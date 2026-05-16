@@ -31,8 +31,17 @@ assert(opts.args_allow_files_auto_save == false, "auto-session should not autosa
 assert(type(opts.bypass_save_filetypes) == "table", "auto-session should bypass dashboard-only filetypes")
 assert(vim.tbl_contains(opts.bypass_save_filetypes, "alpha"), "auto-session should ignore alpha-only sessions")
 assert(type(opts.close_filetypes_on_save) == "table", "auto-session should close transient windows before saving")
-assert(vim.tbl_contains(opts.close_filetypes_on_save, "checkhealth"), "auto-session should close checkhealth before saving")
+assert(
+	vim.tbl_contains(opts.close_filetypes_on_save, "checkhealth"),
+	"auto-session should close checkhealth before saving"
+)
 
+local original_manager = vim.env.SKYLINE_PLUGIN_MANAGER
+vim.env.SKYLINE_PLUGIN_MANAGER = "lazy"
 vim.cmd("source init.lua")
+vim.env.SKYLINE_PLUGIN_MANAGER = original_manager
 local expected_sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
-assert(vim.o.sessionoptions == expected_sessionoptions, "sessionoptions should preserve tabs, folds, terminals, and local options")
+assert(
+	vim.o.sessionoptions == expected_sessionoptions,
+	"sessionoptions should preserve tabs, folds, terminals, and local options"
+)

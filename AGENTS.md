@@ -1,12 +1,12 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a small Neovim configuration written in Lua. `init.lua` is the entrypoint and loads modules from `lua/user/`. Keep behavior split by concern: `options.lua` for editor settings, `keymaps.lua` for mappings, `autocmds.lua` for events, `plugins.lua` for lazy.nvim plugin specs, and focused modules such as `lsp.lua`, `colors.lua`, and `alpha.lua` for feature-specific setup.
+This repository is a small Neovim configuration written in Lua. `init.lua` is the entrypoint and loads modules from `lua/user/`. Keep behavior split by concern: `options.lua` for editor settings, `keymaps.lua` for mappings, `autocmds.lua` for events, `plugins.lua` for plugin-manager startup, `bundles.lua` and `qol.lua` for plugin specs, and focused modules such as `lsp.lua`, `colors.lua`, and `alpha.lua` for feature-specific setup.
 
 ## Build, Test, and Development Commands
 Use headless Neovim commands to validate changes without starting a UI:
 
-- `nvim --headless "+Lazy! sync" +qa`: install or update plugins declared in `lua/user/plugins.lua`.
+- `nvim --headless "+lua if vim.pack then vim.pack.update(nil, { force = true }) else vim.cmd('Lazy! sync') end" +qa`: install or update plugins declared in the active bundle profile.
 - `nvim --headless "+checkhealth" +qa`: run Neovim health checks after changing plugins, LSP, or external tools.
 - `nvim --headless "+qa"`: verify the config starts cleanly.
 - `stylua init.lua lua/user`: format Lua files before finishing a change.

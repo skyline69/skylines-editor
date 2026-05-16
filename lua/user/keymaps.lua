@@ -6,6 +6,11 @@ local notify = function(msg)
 	vim.notify(msg, vim.log.levels.WARN)
 end
 local load_plugin = function(plugin)
+	local ok_manager, manager = pcall(require, "user.plugin_manager")
+	if ok_manager and manager.load(plugin) then
+		return
+	end
+
 	local ok, lazy = pcall(require, "lazy")
 	if ok then
 		lazy.load({ plugins = { plugin } })
@@ -27,6 +32,7 @@ local telescope = function(picker_name)
 end
 local feed_plug = function(keys, missing_msg)
 	return function()
+		load_plugin("nvim-cokeline")
 		if pcall(require, "cokeline") then
 			local termcodes = vim.api.nvim_replace_termcodes(keys, true, false, true)
 			vim.api.nvim_feedkeys(termcodes, "m", false)
@@ -56,6 +62,7 @@ end, { desc = "Toggle file tree", silent = true })
 
 -- Format buffer (Conform) --------------------------------------------
 map("n", "<leader>mf", function()
+	load_plugin("conform.nvim")
 	local ok, formatting = pcall(require, "user.formatting")
 	if ok then
 		formatting.format({ async = true })
@@ -66,6 +73,7 @@ end, { desc = "Format buffer" })
 
 -- Trouble diagnostics / references -----------------------------------
 map("n", "<leader>xx", function()
+	load_plugin("trouble.nvim")
 	local ok, tr = pcall(require, "trouble")
 	if ok then
 		tr.toggle("diagnostics")
@@ -75,6 +83,7 @@ map("n", "<leader>xx", function()
 end, { desc = "Diagnostics list" })
 
 map("n", "gr", function()
+	load_plugin("trouble.nvim")
 	local ok, tr = pcall(require, "trouble")
 	if ok then
 		tr.toggle("lsp_references")
@@ -92,6 +101,7 @@ end, { desc = "Open LazyGit", silent = true })
 
 -- Spectre search -----------------------------------------------------
 map("n", "<leader>S", function()
+	load_plugin("nvim-spectre")
 	local ok, sp = pcall(require, "spectre")
 	if ok then
 		sp.toggle()
@@ -104,7 +114,12 @@ end, { desc = "Toggle Spectre" })
 map("n", "t<Left>", feed_plug("<Plug>(cokeline-focus-prev)", "Cokeline not installed"), { silent = true })
 map("n", "t<Right>", feed_plug("<Plug>(cokeline-focus-next)", "Cokeline not installed"), { silent = true })
 for i = 1, 9 do
-	map("n", ("t%s"):format(i), feed_plug(("<Plug>(cokeline-focus-%s)"):format(i), "Cokeline not installed"), { silent = true })
+	map(
+		"n",
+		("t%s"):format(i),
+		feed_plug(("<Plug>(cokeline-focus-%s)"):format(i), "Cokeline not installed"),
+		{ silent = true }
+	)
 end
 map("n", "tc", ":bd<CR>", { desc = "Close buffer", silent = true })
 

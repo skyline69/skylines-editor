@@ -62,10 +62,34 @@ local items = {
 		specs = {
 			{
 				"catgoose/nvim-colorizer.lua",
-				ft = { "css", "scss", "sass", "html", "javascript", "javascriptreact", "typescript", "typescriptreact", "svelte", "vue", "lua" },
+				ft = {
+					"css",
+					"scss",
+					"sass",
+					"html",
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact",
+					"svelte",
+					"vue",
+					"lua",
+				},
 				opts = {
 					user_commands = false,
-					filetypes = { "css", "scss", "sass", "html", "javascript", "javascriptreact", "typescript", "typescriptreact", "svelte", "vue", "lua" },
+					filetypes = {
+						"css",
+						"scss",
+						"sass",
+						"html",
+						"javascript",
+						"javascriptreact",
+						"typescript",
+						"typescriptreact",
+						"svelte",
+						"vue",
+						"lua",
+					},
 					options = {
 						parsers = {
 							css = true,
@@ -84,7 +108,8 @@ local items = {
 		specs = {
 			{
 				"nvim-lualine/lualine.nvim",
-				event = "VeryLazy",
+				lazy = false,
+				priority = 900,
 				dependencies = { "nvim-tree/nvim-web-devicons" },
 				opts = function()
 					return require("user.statusline").opts()
