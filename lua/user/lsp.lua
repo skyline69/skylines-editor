@@ -4,11 +4,6 @@
 local profile = require("user.profile").ensure()
 local selected = require("user.languages").resolve(profile.languages)
 
-local maybe_caps = nil
-pcall(function()
-	maybe_caps = require("blink.cmp").get_lsp_capabilities()
-end)
-
 local servers = {
 	lua_ls = {
 		settings = {
@@ -51,27 +46,42 @@ local servers = {
 	},
 }
 
--- Optional defaults merged into each server config
-local defaults = {}
-if maybe_caps then
-	defaults.capabilities = maybe_caps
-end
-
 for _, name in ipairs(selected.servers) do
 	local cfg = servers[name]
 	if cfg then
-		local merged = vim.tbl_deep_extend("force", {}, defaults, cfg)
-		vim.lsp.config[name] = merged
+		vim.lsp.config[name] = cfg
 	end
 end
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("SkylineBlinkCaps", { clear = true }),
+	callback = function(args)
+		local ok, blink = pcall(require, "blink.cmp")
+		if not ok or type(blink.get_lsp_capabilities) ~= "function" then
+			return
+		end
+		local client = vim.lsp.get_client_by_id(args.data and args.data.client_id)
+		if not client then
+			return
+		end
+		client.server_capabilities =
+			vim.tbl_deep_extend("force", client.server_capabilities or {}, blink.get_lsp_capabilities())
+	end,
+})
 
 local mason_packages = vim.deepcopy(selected.mason_packages)
 if vim.tbl_contains(vim.g.skyline_active_bundles or {}, "syntax") then
 	table.insert(mason_packages, "tree-sitter-cli")
 end
 
-require("mason-tool-installer").setup({
-	ensure_installed = mason_packages,
+vim.api.nvim_create_autocmd("User", {
+	pattern = "VeryLazy",
+	once = true,
+	callback = function()
+		require("mason-tool-installer").setup({
+			ensure_installed = mason_packages,
+		})
+	end,
 })
 
 if #selected.servers > 0 then

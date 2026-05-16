@@ -73,12 +73,15 @@ vim.lsp = {
 
 require("user.lsp")
 
+vim.api.nvim_exec_autocmds("User", { pattern = "VeryLazy", modeline = false })
+
 assert(vim.lsp.config.lua_ls ~= nil, "selected lua server should be registered")
 assert(vim.lsp.config.rust_analyzer ~= nil, "selected rust server should be registered")
 assert(vim.lsp.config.pyright == nil, "unselected python server should not be registered")
 assert(vim.tbl_contains(enabled_servers, "lua_ls"), "selected servers should be enabled")
 assert(vim.tbl_contains(enabled_servers, "rust_analyzer"), "selected servers should be enabled")
 assert(not vim.tbl_contains(enabled_servers, "pyright"), "unselected servers should not be enabled")
+assert(mason_setup, "mason-tool-installer should run on VeryLazy")
 assert(vim.tbl_contains(mason_setup.ensure_installed, "lua_ls"), "selected language packages should still install")
 assert(
 	vim.tbl_contains(mason_setup.ensure_installed, "rust-analyzer"),

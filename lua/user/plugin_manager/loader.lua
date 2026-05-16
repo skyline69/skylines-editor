@@ -282,7 +282,10 @@ function M.load(state, name)
 
 		state.loading[name] = true
 		for _, dep in ipairs(spec._dependencies or {}) do
-			M.load(state, dep)
+			local dep_spec = state.registry:get(dep)
+			if dep_spec and not has_lazy_trigger(dep_spec) then
+				M.load(state, dep)
+			end
 		end
 
 		clear_cmd_loaders(spec)
