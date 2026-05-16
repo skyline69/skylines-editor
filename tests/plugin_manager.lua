@@ -113,3 +113,32 @@ vim.fn.has = original_has
 vim.fn.system = original_system
 vim.opt.rtp = original_rtp
 vim.notify = original_notify
+
+local main_module = manager._main_module
+assert(type(main_module) == "function", "plugin manager should expose main_module for tests")
+
+local cases = {
+	{ name = "nvim-autopairs", expected = "nvim-autopairs" },
+	{ name = "nvim-cokeline", main = "cokeline", expected = "cokeline" },
+	{ name = "nvim-colorizer.lua", main = "colorizer", expected = "colorizer" },
+	{ name = "nvim-tree.lua", expected = "nvim-tree" },
+	{ name = "nvim-treesitter", expected = "nvim-treesitter" },
+	{ name = "lualine.nvim", expected = "lualine" },
+	{ name = "mason.nvim", expected = "mason" },
+	{ name = "LuaSnip", main = "luasnip", expected = "luasnip" },
+	{ name = "CopilotChat.nvim", expected = "CopilotChat" },
+	{ name = "telescope.nvim", expected = "telescope" },
+	{ name = "vim-illuminate", expected = "illuminate" },
+	{ name = "blink.cmp", expected = "blink.cmp" },
+}
+
+for _, case in ipairs(cases) do
+	local resolved = main_module({ name = case.name, main = case.main })
+	assert(
+		resolved == case.expected,
+		("main_module(%s) should be %s, got %s"):format(case.name, case.expected, tostring(resolved))
+	)
+end
+
+local explicit = main_module({ name = "guess-indent.nvim", main = "guess-indent" })
+assert(explicit == "guess-indent", "main_module should honor explicit spec.main field")

@@ -6,20 +6,15 @@ local specs_by_name = {}
 local ordered_names = {}
 local loaded = {}
 local loading = {}
+local errors_by_name = {}
 
-local module_overrides = {
-	["CopilotChat.nvim"] = "CopilotChat",
-	["LuaSnip"] = "luasnip",
-	["crates.nvim"] = "crates",
-	["diffview.nvim"] = "diffview",
-	["hex.nvim"] = "hex",
-	["mason.nvim"] = "mason",
-	["nvim-cokeline"] = "cokeline",
-	["nvim-colorizer.lua"] = "colorizer",
-	["nvim-tree.lua"] = "nvim-tree",
-	["nvim-treesitter"] = "nvim-treesitter",
-	["telescope.nvim"] = "telescope",
-}
+local function record_error(name, message)
+	if not name then
+		return
+	end
+	errors_by_name[name] = errors_by_name[name] or {}
+	table.insert(errors_by_name[name], message)
+end
 
 local function notify(message, level)
 	vim.notify(message, level or vim.log.levels.WARN, { title = "Skyline Pack" })
@@ -35,7 +30,8 @@ local function as_list(value)
 	if type(value) ~= "table" then
 		return {}
 	end
-	if value[1] ~= nil or vim.tbl_islist(value) then
+	local islist = vim.islist or vim.tbl_islist
+	if value[1] ~= nil or islist(value) then
 		return value
 	end
 	return { value }
@@ -185,15 +181,8 @@ local function pack_specs()
 end
 
 local function main_module(spec)
-	local explicit = spec.main
-	if explicit and module_overrides[explicit] then
-		return module_overrides[explicit]
-	end
-	if explicit then
-		return explicit
-	end
-	if module_overrides[spec.name] then
-		return module_overrides[spec.name]
+	if spec.main then
+		return spec.main
 	end
 
 	local module = spec.name
@@ -209,7 +198,9 @@ local function resolve_opts(spec)
 		if ok then
 			return opts
 		end
-		notify(("Failed to resolve opts for %s: %s"):format(spec.name, opts))
+		local message = ("Failed to resolve opts for %s: %s"):format(spec.name, opts)
+		record_error(spec.name, message)
+		notify(message)
 		return nil
 	end
 	if type(spec.opts) == "table" then
@@ -225,13 +216,17 @@ local function setup_module(spec, opts)
 	local module = main_module(spec)
 	local ok, plugin = pcall(require, module)
 	if not ok then
-		notify(("Failed to require %s for %s: %s"):format(module, spec.name, plugin))
+		local message = ("Failed to require %s for %s: %s"):format(module, spec.name, plugin)
+		record_error(spec.name, message)
+		notify(message)
 		return
 	end
 	if type(plugin.setup) == "function" then
 		local setup_ok, err = pcall(plugin.setup, opts or {})
 		if not setup_ok then
-			notify(("Failed to set up %s: %s"):format(spec.name, err))
+			local message = ("Failed to set up %s: %s"):format(spec.name, err)
+			record_error(spec.name, message)
+			notify(message)
 		end
 	end
 end
@@ -246,7 +241,9 @@ local function configure(spec)
 	if type(spec.config) == "function" then
 		local ok, err = pcall(spec.config, spec, opts)
 		if not ok then
-			notify(("Failed to configure %s: %s"):format(spec.name, err))
+			local message = ("Failed to configure %s: %s"):format(spec.name, err)
+			record_error(spec.name, message)
+			notify(message)
 		end
 	elseif spec.config == true or opts ~= nil then
 		setup_module(spec, opts)
@@ -262,7 +259,9 @@ local function run_build(spec, path)
 	if type(build) == "function" then
 		local ok, err = pcall(build, spec)
 		if not ok then
-			notify(("Build hook failed for %s: %s"):format(spec.name, err))
+			local message = ("Build hook failed for %s: %s"):format(spec.name, err)
+			record_error(spec.name, message)
+			notify(message)
 		end
 		return
 	end
@@ -275,7 +274,9 @@ local function run_build(spec, path)
 		M.load(spec.name)
 		local ok, err = pcall(vim.cmd, build:sub(2))
 		if not ok then
-			notify(("Build command failed for %s: %s"):format(spec.name, err))
+			local message = ("Build command failed for %s: %s"):format(spec.name, err)
+			record_error(spec.name, message)
+			notify(message)
 		end
 		return
 	end
@@ -480,7 +481,9 @@ function M.load(name)
 		clear_cmd_loaders(spec)
 		local ok, err = pcall(vim.cmd.packadd, name)
 		if not ok then
-			notify(("Failed to load %s: %s"):format(name, err))
+			local message = ("Failed to load %s: %s"):format(name, err)
+			record_error(name, message)
+			notify(message)
 			loading[name] = nil
 			return false
 		end
@@ -543,5 +546,60 @@ function M.setup(specs)
 	end
 	return M.setup_lazy(specs)
 end
+
+function M.status()
+	local rows = {}
+	for _, name in ipairs(ordered_names) do
+		local state = "pending"
+		if errors_by_name[name] then
+			state = "error"
+		elseif loaded[name] then
+			state = "loaded"
+		end
+		rows[#rows + 1] = {
+			name = name,
+			state = state,
+			errors = errors_by_name[name] or {},
+		}
+	end
+	return rows
+end
+
+local function open_status_buffer()
+	local rows = M.status()
+	local lines = { ("Skyline Pack (%s) — %d plugins"):format(vim.g.skyline_plugin_manager or "?", #rows), "" }
+	local icon = { loaded = "✓", pending = "·", error = "✗" }
+	for _, row in ipairs(rows) do
+		lines[#lines + 1] = ("%s  %-30s  %s"):format(icon[row.state] or "?", row.name, row.state)
+		for _, message in ipairs(row.errors) do
+			for _, errline in ipairs(vim.split(message, "\n", { plain = true })) do
+				lines[#lines + 1] = "      " .. errline
+			end
+		end
+	end
+
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+	vim.bo[buf].buftype = "nofile"
+	vim.bo[buf].bufhidden = "wipe"
+	vim.bo[buf].modifiable = false
+	vim.api.nvim_open_win(buf, true, {
+		relative = "editor",
+		row = math.floor((vim.o.lines - math.min(#lines + 2, 30)) / 2),
+		col = math.floor((vim.o.columns - 80) / 2),
+		width = 80,
+		height = math.min(#lines + 2, 30),
+		style = "minimal",
+		border = "rounded",
+		title = " SkylinePackStatus ",
+	})
+	vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = buf, silent = true })
+end
+
+vim.api.nvim_create_user_command("SkylinePackStatus", open_status_buffer, {
+	desc = "Show Skyline plugin load status and errors",
+})
+
+M._main_module = main_module
 
 return M

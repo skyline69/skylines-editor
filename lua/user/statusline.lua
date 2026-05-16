@@ -1,7 +1,7 @@
 local M = {}
 local lsp_ui = require("user.lsp_ui")
 
-local colors = {
+local fallback_colors = {
 	bg = "#10141b",
 	panel = "#151b24",
 	panel_alt = "#1d2531",
@@ -15,6 +15,44 @@ local colors = {
 	red = "#ee5396",
 	purple = "#be95ff",
 }
+
+local function hex(value)
+	if type(value) ~= "number" then
+		return nil
+	end
+	return string.format("#%06x", value)
+end
+
+local function hl_color(name, field, fallback)
+	local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+	if not ok or type(hl) ~= "table" then
+		return fallback
+	end
+	return hex(hl[field]) or fallback
+end
+
+local function resolve_colors()
+	return {
+		bg = hl_color("Normal", "bg", fallback_colors.bg),
+		fg = hl_color("Normal", "fg", fallback_colors.fg),
+		muted = hl_color("Comment", "fg", fallback_colors.muted),
+		panel = hl_color("StatusLine", "bg", fallback_colors.panel),
+		panel_alt = hl_color("CursorLine", "bg", fallback_colors.panel_alt),
+		blue = hl_color("Function", "fg", fallback_colors.blue),
+		cyan = hl_color("Special", "fg", fallback_colors.cyan),
+		green = hl_color("String", "fg", fallback_colors.green),
+		yellow = hl_color("WarningMsg", "fg", fallback_colors.yellow),
+		orange = hl_color("Constant", "fg", fallback_colors.orange),
+		red = hl_color("ErrorMsg", "fg", fallback_colors.red),
+		purple = hl_color("Keyword", "fg", fallback_colors.purple),
+	}
+end
+
+local colors = resolve_colors()
+
+function M.refresh_colors()
+	colors = resolve_colors()
+end
 
 local root_markers = {
 	".git",
@@ -336,6 +374,19 @@ function M.opts()
 			lualine_z = {},
 		},
 	}
+end
+
+function M.attach_colorscheme_refresh()
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		group = vim.api.nvim_create_augroup("SkylineStatuslineRefresh", { clear = true }),
+		callback = function()
+			M.refresh_colors()
+			local ok, lualine = pcall(require, "lualine")
+			if ok and type(lualine.setup) == "function" then
+				lualine.setup(M.opts())
+			end
+		end,
+	})
 end
 
 return M

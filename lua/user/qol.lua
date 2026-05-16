@@ -53,7 +53,7 @@ local items = {
 		description = "Cargo.toml dependency helpers for Rust.",
 		requires_languages = { "rust" },
 		specs = {
-			{ "saecki/crates.nvim", config = true },
+			{ "saecki/crates.nvim", ft = "toml", config = true },
 		},
 	},
 	colorizer = {
@@ -62,6 +62,7 @@ local items = {
 		specs = {
 			{
 				"catgoose/nvim-colorizer.lua",
+				main = "colorizer",
 				ft = {
 					"css",
 					"scss",
@@ -113,6 +114,11 @@ local items = {
 				dependencies = { "nvim-tree/nvim-web-devicons" },
 				opts = function()
 					return require("user.statusline").opts()
+				end,
+				config = function(_, opts)
+					local statusline = require("user.statusline")
+					require("lualine").setup(opts)
+					statusline.attach_colorscheme_refresh()
 				end,
 			},
 		},

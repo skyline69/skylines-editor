@@ -14,9 +14,10 @@ assert(opts.options.globalstatus == true, "lualine should use a global statuslin
 assert(opts.options.section_separators.left == "", "lualine should keep a flat section style")
 assert(opts.options.section_separators.right == "", "lualine should keep a flat section style")
 assert(vim.tbl_contains(opts.options.disabled_filetypes.statusline, "alpha"), "alpha should not render lualine")
-assert(opts.options.theme.normal.c.bg == "#151b24", "lualine should use a dedicated Carbonfox-style panel background")
-assert(opts.options.theme.normal.x.bg == "#151b24", "right-side statusline sections should share the panel background")
-assert(opts.options.theme.inactive.c.bg == "#151b24", "inactive statuslines should keep the same panel background")
+local panel_bg = opts.options.theme.normal.c.bg
+assert(type(panel_bg) == "string" and panel_bg:match("^#%x%x%x%x%x%x$"), "panel background should be a hex color")
+assert(opts.options.theme.normal.x.bg == panel_bg, "right-side sections should share the panel background")
+assert(opts.options.theme.inactive.c.bg == panel_bg, "inactive statusline should keep the same panel background")
 
 local root = vim.fn.tempname()
 vim.fn.mkdir(root .. "/apps/api/src", "p")

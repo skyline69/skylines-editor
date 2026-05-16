@@ -41,14 +41,7 @@ opt.showmode = false
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-local function apply_statusline_hl()
-	vim.api.nvim_set_hl(0, "StatusLine", { fg = "#f2f4f8", bg = "#151b24" })
-	vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#8a8f98", bg = "#151b24" })
-end
-apply_statusline_hl()
-vim.api.nvim_create_autocmd("ColorScheme", {
-	group = vim.api.nvim_create_augroup("SkylineStatusLineHL", { clear = true }),
-	callback = apply_statusline_hl,
-})
+vim.api.nvim_set_hl(0, "StatusLine", { fg = "#f2f4f8", bg = "#151b24" })
+vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#8a8f98", bg = "#151b24" })
 
 vim.lsp.log.set_level("ERROR")

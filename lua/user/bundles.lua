@@ -54,7 +54,16 @@ local bundles = {
 					lazy = false,
 					priority = 800,
 					cond = function()
-						return vim.fn.argc() == 0
+						if vim.fn.argc() ~= 0 then
+							return false
+						end
+						local cwd = vim.fn.getcwd()
+						local encoded = cwd:gsub("/", "%%")
+						local session_file = vim.fn.stdpath("data") .. "/sessions/" .. encoded .. ".vim"
+						if (vim.uv or vim.loop).fs_stat(session_file) then
+							return false
+						end
+						return true
 					end,
 					dependencies = "nvim-tree/nvim-web-devicons",
 					config = function()
@@ -63,6 +72,7 @@ local bundles = {
 				},
 				{
 					"willothy/nvim-cokeline",
+					main = "cokeline",
 					event = "VeryLazy",
 					dependencies = {
 						"nvim-lua/plenary.nvim",
@@ -264,6 +274,8 @@ local bundles = {
 					dependencies = {
 						{
 							"L3MON4D3/LuaSnip",
+							main = "luasnip",
+							lazy = true,
 							version = "2.*",
 							build = (vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0) and nil
 								or "make install_jsregexp",
