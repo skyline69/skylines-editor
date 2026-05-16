@@ -39,4 +39,4 @@ opt.wrap = false
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-vim.lsp.set_log_level("ERROR")
+vim.lsp.log.set_level("ERROR")
