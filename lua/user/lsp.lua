@@ -65,14 +65,19 @@ end
 for _, name in ipairs(selected.servers) do
 	local cfg = servers[name]
 	if cfg then
-	-- Merge your defaults into each server’s config
+		-- Merge your defaults into each server’s config
 		local merged = vim.tbl_deep_extend("force", {}, defaults, cfg)
 		vim.lsp.config[name] = merged
 	end
 end
 
+local mason_packages = vim.deepcopy(selected.mason_packages)
+if vim.tbl_contains(vim.g.skyline_active_bundles or {}, "syntax") then
+	table.insert(mason_packages, "tree-sitter-cli")
+end
+
 require("mason-tool-installer").setup({
-	ensure_installed = selected.mason_packages,
+	ensure_installed = mason_packages,
 })
 
 if #selected.servers > 0 then

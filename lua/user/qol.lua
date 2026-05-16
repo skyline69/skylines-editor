@@ -142,6 +142,7 @@ local items = {
 			{
 				"y3owk1n/undo-glow.nvim",
 				version = "*",
+				event = "VeryLazy",
 				opts = {
 					animation = {
 						enabled = true,
