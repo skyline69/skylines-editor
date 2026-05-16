@@ -1,5 +1,6 @@
 local M = {}
 local ui = require("user.ui")
+local priorities = require("user.priorities")
 local default_enabled_ids = {
 	lualine = true,
 }
@@ -110,7 +111,7 @@ local items = {
 			{
 				"nvim-lualine/lualine.nvim",
 				lazy = false,
-				priority = 900,
+				priority = priorities.STATUSLINE,
 				dependencies = { "nvim-tree/nvim-web-devicons" },
 				opts = function()
 					return require("user.statusline").opts()
@@ -231,11 +232,7 @@ local items = {
 				"dmmulroy/tsc.nvim",
 				cmd = { "TSC", "TSCOpen", "TSCClose", "TSCStop" },
 				ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-				config = function()
-					require("tsc").setup({
-						use_diagnostics = true,
-					})
-				end,
+				opts = { use_diagnostics = true },
 			},
 		},
 	},
@@ -247,12 +244,10 @@ local items = {
 			{
 				"dmmulroy/ts-error-translator.nvim",
 				ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-				config = function()
-					require("ts-error-translator").setup({
-						auto_attach = true,
-						servers = { "ts_ls" },
-					})
-				end,
+				opts = {
+					auto_attach = true,
+					servers = { "ts_ls" },
+				},
 			},
 		},
 	},
@@ -295,11 +290,7 @@ local items = {
 						desc = "Install package dependency",
 					},
 				},
-				config = function()
-					require("package-info").setup({
-						autostart = true,
-					})
-				end,
+				opts = { autostart = true },
 			},
 		},
 	},
@@ -325,11 +316,7 @@ local items = {
 				keys = {
 					{ "<leader>cm", "<cmd>CommitMate<cr>", desc = "Generate commit message" },
 				},
-				config = function()
-					require("commitmate").setup({
-						open_lazygit = false,
-					})
-				end,
+				opts = { open_lazygit = false },
 			},
 		},
 	},
@@ -354,25 +341,19 @@ local ordered_ids = {
 	"commitmate",
 }
 
-function M.get_all()
-	local result = {}
-	for _, id in ipairs(ordered_ids) do
-		local item = items[id]
-		result[#result + 1] = {
-			id = id,
-			label = item.label,
-			description = item.description,
-			requires_languages = item.requires_languages,
-			requires_features = item.requires_features,
-			note = item.note,
-		}
-	end
-	return result
-end
+local api = require("user.catalog").from(items, ordered_ids, function(id, item)
+	return {
+		id = id,
+		label = item.label,
+		description = item.description,
+		requires_languages = item.requires_languages,
+		requires_features = item.requires_features,
+		note = item.note,
+	}
+end)
 
-function M.is_valid(id)
-	return items[id] ~= nil
-end
+M.get_all = api.get_all
+M.is_valid = api.is_valid
 
 function M.default_selected()
 	local selected = {}

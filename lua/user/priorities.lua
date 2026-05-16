@@ -1,0 +1,5 @@
+return {
+	COLORSCHEME = 1000,
+	STATUSLINE = 900,
+	DASHBOARD = 800,
+}

@@ -4,15 +4,11 @@
 local profile = require("user.profile").ensure()
 local selected = require("user.languages").resolve(profile.languages)
 
--- cmp capabilities:
--- On Nvim 0.11+ with vim.lsp.config, most completion plugins don’t require
--- manual capability merging. Keep this line if your cmp needs it; otherwise remove.
 local maybe_caps = nil
 pcall(function()
 	maybe_caps = require("blink.cmp").get_lsp_capabilities()
 end)
 
--- Define your servers (same content you had), just data:
 local servers = {
 	lua_ls = {
 		settings = {
@@ -61,11 +57,9 @@ if maybe_caps then
 	defaults.capabilities = maybe_caps
 end
 
--- Register configs with the native API
 for _, name in ipairs(selected.servers) do
 	local cfg = servers[name]
 	if cfg then
-		-- Merge your defaults into each server’s config
 		local merged = vim.tbl_deep_extend("force", {}, defaults, cfg)
 		vim.lsp.config[name] = merged
 	end

@@ -1,5 +1,20 @@
+---@class SkylineLanguages
 local M = {}
 
+---@class SkylinePackageEntry
+---@field name string Mason package id.
+---@field label string Display label.
+
+---@class SkylineResolvedLanguages
+---@field languages string[]
+---@field servers string[]
+---@field mason_packages string[]
+---@field required_features string[]
+---@field tools string[]
+
+---@param name string
+---@param label? string
+---@return SkylinePackageEntry
 local function pkg(name, label)
 	return { name = name, label = label or name }
 end
@@ -135,24 +150,20 @@ local function uniq_extend(target, seen, values)
 	end
 end
 
-function M.get_all()
-	local result = {}
-	for _, id in ipairs(ordered_ids) do
-		local item = catalog[id]
-		result[#result + 1] = {
-			id = id,
-			label = item.label,
-			description = item.description,
-			tools = item_tool_labels(item),
-		}
-	end
-	return result
-end
+local api = require("user.catalog").from(catalog, ordered_ids, function(id, item)
+	return {
+		id = id,
+		label = item.label,
+		description = item.description,
+		tools = item_tool_labels(item),
+	}
+end)
 
-function M.is_valid(id)
-	return catalog[id] ~= nil
-end
+M.get_all = api.get_all
+M.is_valid = api.is_valid
 
+---@param selected_ids string[]
+---@return SkylineResolvedLanguages
 function M.resolve(selected_ids)
 	local normalized = {}
 	local seen_ids = {}

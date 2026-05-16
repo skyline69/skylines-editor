@@ -1,13 +1,13 @@
 local M = {}
 
+local util = require("user.util")
+
 local function as_list(value)
-	if value == nil then
-		return {}
+	local result = util.as_list(value)
+	if value ~= nil and type(value) == "table" then
+		return vim.deepcopy(result)
 	end
-	if type(value) == "string" then
-		return { value }
-	end
-	return vim.deepcopy(value)
+	return result
 end
 
 local function as_set(values)

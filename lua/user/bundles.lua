@@ -1,6 +1,7 @@
 local M = {}
 local languages = require("user.languages")
 local qol = require("user.qol")
+local priorities = require("user.priorities")
 
 local bundles = {
 	core = {
@@ -44,7 +45,7 @@ local bundles = {
 			return {
 				{
 					"EdenEast/nightfox.nvim",
-					priority = 1000,
+					priority = priorities.COLORSCHEME,
 					config = function()
 						require("user.colors")
 					end,
@@ -52,7 +53,7 @@ local bundles = {
 				{
 					"goolord/alpha-nvim",
 					lazy = false,
-					priority = 800,
+					priority = priorities.DASHBOARD,
 					cond = function()
 						if vim.fn.argc() ~= 0 then
 							return false
@@ -352,27 +353,14 @@ local bundles = {
 }
 
 local ordered_ids = { "core", "ui", "search", "tree", "git", "syntax", "lsp", "extras" }
+local api = require("user.catalog").from(bundles, ordered_ids)
 
 function M.get_default_minimal()
 	return { "core" }
 end
 
-function M.get_all()
-	local result = {}
-	for _, id in ipairs(ordered_ids) do
-		local bundle = bundles[id]
-		result[#result + 1] = {
-			id = id,
-			label = bundle.label,
-			description = bundle.description,
-		}
-	end
-	return result
-end
-
-function M.is_valid(id)
-	return bundles[id] ~= nil
-end
+M.get_all = api.get_all
+M.is_valid = api.is_valid
 
 function M.resolve_plugins(enabled_ids, selected_languages, selected_qol)
 	local specs = {}
