@@ -41,6 +41,9 @@ assert(loaded_plugins[2] == "nvim-tree.lua", "tree mapping should load nvim-tree
 assert(_G.skyline_tree_opened == true, "tree mapping should execute NvimTreeToggle after loading")
 
 local diffview = vim.fn.maparg("<leader>dv", "n", false, true)
-assert(diffview.rhs == "<cmd>DiffviewOpen<CR>", "diffview mapping should stay command-based so Lazy cmd stubs can load the plugin")
+assert(
+	diffview.rhs == "<cmd>DiffviewOpen<CR>",
+	"diffview mapping should stay command-based so Lazy cmd stubs can load the plugin"
+)
 
 pcall(vim.api.nvim_del_user_command, "NvimTreeToggle")

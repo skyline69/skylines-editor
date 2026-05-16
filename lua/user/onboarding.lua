@@ -22,11 +22,8 @@ function M.choose_bundles()
 		by_id[bundle.id] = bundle
 	end
 
-	local first_choice = vim.fn.confirm(
-		"Choose initial setup",
-		"&Minimal core only\n&Customize bundles\n&Install everything",
-		1
-	)
+	local first_choice =
+		vim.fn.confirm("Choose initial setup", "&Minimal core only\n&Customize bundles\n&Install everything", 1)
 
 	if first_choice == 3 then
 		for _, id in ipairs(ids) do
@@ -41,11 +38,8 @@ function M.choose_bundles()
 
 	for _, id in ipairs(ids) do
 		local bundle = by_id[id]
-		local install = vim.fn.confirm(
-			string.format("Install %s?\n%s", bundle.label, bundle.description),
-			"&Yes\n&No",
-			2
-		)
+		local install =
+			vim.fn.confirm(string.format("Install %s?\n%s", bundle.label, bundle.description), "&Yes\n&No", 2)
 
 		if install == 1 then
 			selected[#selected + 1] = id

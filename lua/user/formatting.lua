@@ -88,8 +88,10 @@ local function warn_missing(bufnr, info)
 	end
 	vim.b[bufnr].skyline_format_warning = key
 	vim.notify(
-		("Project formatter '%s' is configured at %s, but the required executable is missing. Formatting was skipped.")
-			:format(info.project_formatter, info.config_path),
+		("Project formatter '%s' is configured at %s, but the required executable is missing. Formatting was skipped."):format(
+			info.project_formatter,
+			info.config_path
+		),
 		vim.log.levels.WARN,
 		{ title = "Skyline Format" }
 	)

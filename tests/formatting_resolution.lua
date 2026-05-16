@@ -37,7 +37,7 @@ mkdirp(root)
 local formatting = require("user.formatting")
 
 local biome_root = root .. "/biome"
-write(biome_root .. "/biome.json", { "{}", })
+write(biome_root .. "/biome.json", { "{}" })
 write(biome_root .. "/node_modules/.bin/biome", { "#!/bin/sh", "exit 0" })
 chmod_x(biome_root .. "/node_modules/.bin/biome")
 local biome_file = biome_root .. "/src/app.ts"
@@ -47,10 +47,13 @@ local biome_buf = make_buffer(biome_file, "typescript")
 local biome_info = formatting.resolve(biome_buf)
 assert(biome_info.source == "project", "biome project should use project formatter")
 assert(biome_info.project_formatter == "biome", "biome config should select biome")
-assert(vim.deep_equal(biome_info.formatters, { "skyline_biome" }), "biome project should resolve the custom local biome formatter")
+assert(
+	vim.deep_equal(biome_info.formatters, { "skyline_biome" }),
+	"biome project should resolve the custom local biome formatter"
+)
 
 local prettier_root = root .. "/prettier-missing"
-write(prettier_root .. "/.prettierrc", { "{}", })
+write(prettier_root .. "/.prettierrc", { "{}" })
 local prettier_file = prettier_root .. "/src/app.ts"
 write(prettier_file, { "const x = 1;" })
 

@@ -44,23 +44,44 @@ for _, id in ipairs({
 end
 
 local ts_gated = qol.resolve({ "tsc", "ts_error_translator", "package_info" }, {}, {})
-assert(not vim.tbl_contains(ts_gated.selected, "tsc"), "TypeScript helpers should stay disabled without the TypeScript language")
-assert(not vim.tbl_contains(ts_gated.selected, "ts_error_translator"), "TypeScript error translation should stay disabled without the TypeScript language")
-assert(not vim.tbl_contains(ts_gated.selected, "package_info"), "package-info should stay disabled without the TypeScript language")
+assert(
+	not vim.tbl_contains(ts_gated.selected, "tsc"),
+	"TypeScript helpers should stay disabled without the TypeScript language"
+)
+assert(
+	not vim.tbl_contains(ts_gated.selected, "ts_error_translator"),
+	"TypeScript error translation should stay disabled without the TypeScript language"
+)
+assert(
+	not vim.tbl_contains(ts_gated.selected, "package_info"),
+	"package-info should stay disabled without the TypeScript language"
+)
 
 local ts_enabled = qol.resolve({ "tsc", "ts_error_translator", "package_info" }, { "typescript" }, {})
 assert(vim.tbl_contains(ts_enabled.selected, "tsc"), "TypeScript helpers should enable when TypeScript is selected")
-assert(vim.tbl_contains(ts_enabled.selected, "ts_error_translator"), "TypeScript error translation should enable when TypeScript is selected")
+assert(
+	vim.tbl_contains(ts_enabled.selected, "ts_error_translator"),
+	"TypeScript error translation should enable when TypeScript is selected"
+)
 assert(vim.tbl_contains(ts_enabled.selected, "package_info"), "package-info should enable when TypeScript is selected")
 assert(find_repo(ts_enabled.specs, "dmmulroy/tsc.nvim"), "TypeScript helper should add tsc.nvim")
-assert(find_repo(ts_enabled.specs, "dmmulroy/ts-error-translator.nvim"), "TypeScript helper should add ts-error-translator.nvim")
+assert(
+	find_repo(ts_enabled.specs, "dmmulroy/ts-error-translator.nvim"),
+	"TypeScript helper should add ts-error-translator.nvim"
+)
 assert(find_repo(ts_enabled.specs, "vuki656/package-info.nvim"), "TypeScript helper should add package-info.nvim")
 
 local git_gated = qol.resolve({ "commitmate" }, {}, {})
-assert(not vim.tbl_contains(git_gated.selected, "commitmate"), "CommitMate should stay disabled without the Git feature")
+assert(
+	not vim.tbl_contains(git_gated.selected, "commitmate"),
+	"CommitMate should stay disabled without the Git feature"
+)
 
 local git_enabled = qol.resolve({ "commitmate" }, {}, { "core", "git" })
-assert(vim.tbl_contains(git_enabled.selected, "commitmate"), "CommitMate should enable when the Git feature is selected")
+assert(
+	vim.tbl_contains(git_enabled.selected, "commitmate"),
+	"CommitMate should enable when the Git feature is selected"
+)
 assert(find_repo(git_enabled.specs, "ajatdarojat45/commitmate.nvim"), "CommitMate should add its plugin spec")
 
 local ui_qol = qol.resolve({ "notify", "noice" }, {}, {})
@@ -70,9 +91,16 @@ local notify_spec = assert(find_repo(ui_qol.specs, "rcarriga/nvim-notify"), "Not
 assert(notify_spec.opts.top_down == true, "Notify should stack transient popups from the top-right")
 local noice_spec = assert(find_repo(ui_qol.specs, "folke/noice.nvim"), "Noice should add noice.nvim")
 assert(noice_spec.opts.lsp.progress.enabled == true, "Noice should enable LSP progress UI")
-assert(has_skip_route(noice_spec.opts.routes, "lsp", "progress"), "Noice should suppress popup rendering for LSP progress")
+assert(
+	has_skip_route(noice_spec.opts.routes, "lsp", "progress"),
+	"Noice should suppress popup rendering for LSP progress"
+)
 
-local general_qol_specs = bundles.resolve_plugins({ "core" }, {}, { "colorizer", "lualine", "illuminate", "undo_glow", "notify", "noice" })
+local general_qol_specs = bundles.resolve_plugins(
+	{ "core" },
+	{},
+	{ "colorizer", "lualine", "illuminate", "undo_glow", "notify", "noice" }
+)
 assert(find_repo(general_qol_specs, "catgoose/nvim-colorizer.lua"), "General QoL should include colorizer")
 assert(find_repo(general_qol_specs, "nvim-lualine/lualine.nvim"), "General QoL should include lualine")
 assert(find_repo(general_qol_specs, "RRethy/vim-illuminate"), "General QoL should include vim-illuminate")
@@ -89,8 +117,14 @@ local normalized = profile.normalize({
 assert(vim.tbl_contains(normalized.qol, "lualine"), "Valid general QoL items should survive normalization")
 assert(vim.tbl_contains(normalized.qol, "notify"), "Notify should survive normalization as a general QoL item")
 assert(vim.tbl_contains(normalized.qol, "noice"), "Noice should survive normalization as a general QoL item")
-assert(not vim.tbl_contains(normalized.qol, "commitmate"), "Feature-gated QoL items should be dropped without the required feature")
-assert(not vim.tbl_contains(normalized.qol, "tsc"), "Language-gated QoL items should be dropped without the required language")
+assert(
+	not vim.tbl_contains(normalized.qol, "commitmate"),
+	"Feature-gated QoL items should be dropped without the required feature"
+)
+assert(
+	not vim.tbl_contains(normalized.qol, "tsc"),
+	"Language-gated QoL items should be dropped without the required language"
+)
 
 local core_specs = bundles.resolve_plugins({ "core" }, {}, {})
 local mini_spec = assert(find_repo(core_specs, "echasnovski/mini.nvim"), "core bundle should include mini.nvim")

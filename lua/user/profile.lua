@@ -78,7 +78,8 @@ local function normalize(profile)
 	end
 
 	for _, id in ipairs(profile.qol or {}) do
-		if qol_mod.is_valid(id)
+		if
+			qol_mod.is_valid(id)
 			and not seen_qol[id]
 			and not seen_disabled_qol[id]
 			and qol_mod.is_available(id, normalized.languages, normalized.features)

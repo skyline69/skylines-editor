@@ -35,7 +35,8 @@ local gitsigns = assert(find_repo(specs, "lewis6991/gitsigns.nvim"), "gitsigns s
 assert(type(gitsigns.event) == "table", "gitsigns should lazy-load on buffer events")
 assert(vim.tbl_contains(gitsigns.event, "BufReadPre"), "gitsigns should load on BufReadPre")
 
-local markdown = assert(find_repo(specs, "MeanderingProgrammer/render-markdown.nvim"), "render-markdown spec should exist")
+local markdown =
+	assert(find_repo(specs, "MeanderingProgrammer/render-markdown.nvim"), "render-markdown spec should exist")
 assert(type(markdown.ft) == "table", "render-markdown should load on markdown filetypes")
 assert(vim.tbl_contains(markdown.ft, "markdown"), "render-markdown should load for markdown")
 
@@ -79,6 +80,9 @@ assert(vim.tbl_contains(enabled_servers, "lua_ls"), "selected servers should be 
 assert(vim.tbl_contains(enabled_servers, "rust_analyzer"), "selected servers should be enabled")
 assert(not vim.tbl_contains(enabled_servers, "pyright"), "unselected servers should not be enabled")
 assert(vim.tbl_contains(mason_setup.ensure_installed, "lua_ls"), "selected language packages should still install")
-assert(vim.tbl_contains(mason_setup.ensure_installed, "rust-analyzer"), "selected language packages should still install")
+assert(
+	vim.tbl_contains(mason_setup.ensure_installed, "rust-analyzer"),
+	"selected language packages should still install"
+)
 
 vim.lsp = original_lsp

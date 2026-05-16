@@ -52,7 +52,10 @@ end
 
 assert(lsp_ui.activity_status() == "", "completed progress should disappear from the transient status")
 assert(#notifications == 1, "completed progress should emit a completion notification")
-assert(notifications[1].msg == "LSP ready", "completed progress without a resolved client should fall back to a generic message")
+assert(
+	notifications[1].msg == "LSP ready",
+	"completed progress without a resolved client should fall back to a generic message"
+)
 
 notifications = {}
 

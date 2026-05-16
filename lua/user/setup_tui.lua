@@ -183,10 +183,16 @@ local function render(state)
 		review = {
 			"Selected features: " .. table.concat(state.profile.features, ", "),
 			"Effective features: " .. table.concat(effective_features, ", "),
-			"Selected languages: " .. (#state.profile.languages > 0 and table.concat(state.profile.languages, ", ") or "none"),
-			"Selected QoL: " .. (#state.profile.qol > 0 and table.concat(profile_mod.normalize(state.profile).qol, ", ") or "none"),
-			"Mason packages: " .. (#resolved_languages.mason_packages > 0 and table.concat(resolved_languages.mason_packages, ", ") or "none"),
-			"LSP servers: " .. (#resolved_languages.servers > 0 and table.concat(resolved_languages.servers, ", ") or "none"),
+			"Selected languages: "
+				.. (#state.profile.languages > 0 and table.concat(state.profile.languages, ", ") or "none"),
+			"Selected QoL: "
+				.. (#state.profile.qol > 0 and table.concat(profile_mod.normalize(state.profile).qol, ", ") or "none"),
+			"Mason packages: " .. (#resolved_languages.mason_packages > 0 and table.concat(
+				resolved_languages.mason_packages,
+				", "
+			) or "none"),
+			"LSP servers: "
+				.. (#resolved_languages.servers > 0 and table.concat(resolved_languages.servers, ", ") or "none"),
 			"",
 			"Save this profile when the summary looks right.",
 			"If you changed plugins or languages, restart Neovim to fully apply the new setup.",
@@ -205,7 +211,8 @@ local function render(state)
 		if item.reason then
 			extra = extra .. "  (" .. item.reason .. ")"
 		end
-		content[active_page][#content[active_page] + 1] = string.format("%s %s - %s%s", marker, item.label, item.description, extra)
+		content[active_page][#content[active_page] + 1] =
+			string.format("%s %s - %s%s", marker, item.label, item.description, extra)
 	end
 
 	local max_lines = math.max(#pages + 2, #content[active_page] + 4)
