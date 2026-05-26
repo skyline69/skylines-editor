@@ -222,19 +222,45 @@ function M.open_results(results)
 	vim.bo[buf].buftype = "nofile"
 	vim.bo[buf].bufhidden = "wipe"
 	vim.bo[buf].modifiable = false
-	local height = math.min(#lines + 2, 30)
-	vim.api.nvim_open_win(buf, true, {
-		relative = "editor",
-		row = math.floor((vim.o.lines - height) / 2),
-		col = math.floor((vim.o.columns - 80) / 2),
-		width = 80,
-		height = height,
-		style = "minimal",
-		border = "rounded",
-		title = " SkylinePackUpdate ",
-		footer = " q to close ",
-		footer_pos = "right",
+	local line_count = #lines
+	local function win_config()
+		local width = math.min(80, vim.o.columns - 4)
+		local height = math.min(line_count + 2, 30, vim.o.lines - 4)
+		return {
+			relative = "editor",
+			row = math.floor((vim.o.lines - height) / 2),
+			col = math.floor((vim.o.columns - width) / 2),
+			width = width,
+			height = height,
+			style = "minimal",
+			border = "rounded",
+			title = " SkylinePackUpdate ",
+			footer = " q to close ",
+			footer_pos = "right",
+		}
+	end
+
+	local win = vim.api.nvim_open_win(buf, true, win_config())
+
+	local resize_group = vim.api.nvim_create_augroup("SkylinePackUpdateResize", { clear = true })
+	vim.api.nvim_create_autocmd("VimResized", {
+		group = resize_group,
+		callback = function()
+			if vim.api.nvim_win_is_valid(win) then
+				vim.api.nvim_win_set_config(win, win_config())
+			else
+				vim.api.nvim_del_augroup_by_id(resize_group)
+			end
+		end,
 	})
+	vim.api.nvim_create_autocmd("BufWipeout", {
+		group = resize_group,
+		buffer = buf,
+		callback = function()
+			vim.api.nvim_del_augroup_by_id(resize_group)
+		end,
+	})
+
 	vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = buf, silent = true })
 	vim.keymap.set("n", "<Esc>", "<cmd>close<cr>", { buffer = buf, silent = true })
 end
