@@ -294,32 +294,6 @@ local items = {
 			},
 		},
 	},
-	commitmate = {
-		label = "CommitMate",
-		description = "Generate commit messages with Copilot Chat.",
-		requires_features = { "git" },
-		specs = {
-			{
-				"ajatdarojat45/commitmate.nvim",
-				cmd = { "CommitMate" },
-				dependencies = {
-					"nvim-lua/plenary.nvim",
-					{
-						"CopilotC-Nvim/CopilotChat.nvim",
-						build = "make tiktoken",
-						dependencies = {
-							"nvim-lua/plenary.nvim",
-						},
-						opts = {},
-					},
-				},
-				keys = {
-					{ "<leader>cm", "<cmd>CommitMate<cr>", desc = "Generate commit message" },
-				},
-				opts = { open_lazygit = false },
-			},
-		},
-	},
 }
 
 local ordered_ids = {
@@ -338,7 +312,6 @@ local ordered_ids = {
 	"tsc",
 	"ts_error_translator",
 	"package_info",
-	"commitmate",
 }
 
 local api = require("user.catalog").from(items, ordered_ids, function(id, item)

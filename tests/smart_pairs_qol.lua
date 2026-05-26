@@ -17,6 +17,6 @@ assert(type(spec.opts) == "table", "smart pairs should configure nvim-autopairs 
 assert(spec.opts.check_ts == true, "smart pairs should enable treesitter-aware checks")
 assert(spec.opts.enable_check_bracket_line == false, "smart pairs should allow Enter between braces on the same line")
 assert(
-	spec.opts.fast_wrap == nil or spec.opts.fast_wrap == {},
+	spec.opts.fast_wrap == nil or (type(spec.opts.fast_wrap) == "table" and next(spec.opts.fast_wrap) == nil),
 	"smart pairs migration should stay focused and avoid broad fast-wrap behavior"
 )

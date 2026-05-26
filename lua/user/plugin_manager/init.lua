@@ -4,6 +4,7 @@ local M = {}
 local registry_mod = require("user.plugin_manager.registry")
 local loader = require("user.plugin_manager.loader")
 local status = require("user.plugin_manager.status")
+local update = require("user.plugin_manager.update")
 
 ---@class SkylinePluginSpec
 ---@field [1] string Repo (e.g. "owner/repo") or full git URL.
@@ -123,6 +124,7 @@ function M.status()
 end
 
 status.register_command(state)
+update.register_command(state)
 
 M._main_module = registry_mod.main_module
 

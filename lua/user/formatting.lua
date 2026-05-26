@@ -306,7 +306,6 @@ function M.format_on_save_opts(bufnr)
 end
 
 function M.opts()
-	local util = require("conform.util")
 	local function root_from_info(ctx)
 		return M.resolve(ctx.buf).root
 	end

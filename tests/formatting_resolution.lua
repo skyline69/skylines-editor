@@ -9,7 +9,7 @@ package.path = table.concat({
 local uv = vim.uv or vim.loop
 
 local function mkdirp(path)
-	assert(vim.fn.mkdir(path, "p") == 1 or vim.fn.isdirectory(path) == 1)
+	assert(vim.fn.mkdir(path, "p") == 1 or vim.fn.isdirectory(path) == 1, "failed to create directory: " .. path)
 end
 
 local function write(path, lines)

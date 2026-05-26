@@ -62,7 +62,7 @@ local function pad(str, width)
 	return text .. string.rep(" ", width - #text)
 end
 
-local function page_index(state, page_id)
+local function page_index(_state, page_id)
 	for index, page in ipairs(pages) do
 		if page.id == page_id then
 			return index

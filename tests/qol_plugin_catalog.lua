@@ -38,7 +38,6 @@ for _, id in ipairs({
 	"tsc",
 	"ts_error_translator",
 	"package_info",
-	"commitmate",
 }) do
 	assert(qol.is_valid(id), ("QoL item %s should be registered"):format(id))
 end
@@ -71,19 +70,6 @@ assert(
 )
 assert(find_repo(ts_enabled.specs, "vuki656/package-info.nvim"), "TypeScript helper should add package-info.nvim")
 
-local git_gated = qol.resolve({ "commitmate" }, {}, {})
-assert(
-	not vim.tbl_contains(git_gated.selected, "commitmate"),
-	"CommitMate should stay disabled without the Git feature"
-)
-
-local git_enabled = qol.resolve({ "commitmate" }, {}, { "core", "git" })
-assert(
-	vim.tbl_contains(git_enabled.selected, "commitmate"),
-	"CommitMate should enable when the Git feature is selected"
-)
-assert(find_repo(git_enabled.specs, "ajatdarojat45/commitmate.nvim"), "CommitMate should add its plugin spec")
-
 local ui_qol = qol.resolve({ "notify", "noice" }, {}, {})
 assert(vim.tbl_contains(ui_qol.selected, "notify"), "Notify should resolve as a general QoL item")
 assert(vim.tbl_contains(ui_qol.selected, "noice"), "Noice should resolve as a general QoL item")
@@ -112,15 +98,11 @@ local normalized = profile.normalize({
 	version = 3,
 	features = { "core" },
 	languages = {},
-	qol = { "commitmate", "tsc", "lualine", "notify", "noice" },
+	qol = { "tsc", "lualine", "notify", "noice" },
 })
 assert(vim.tbl_contains(normalized.qol, "lualine"), "Valid general QoL items should survive normalization")
 assert(vim.tbl_contains(normalized.qol, "notify"), "Notify should survive normalization as a general QoL item")
 assert(vim.tbl_contains(normalized.qol, "noice"), "Noice should survive normalization as a general QoL item")
-assert(
-	not vim.tbl_contains(normalized.qol, "commitmate"),
-	"Feature-gated QoL items should be dropped without the required feature"
-)
 assert(
 	not vim.tbl_contains(normalized.qol, "tsc"),
 	"Language-gated QoL items should be dropped without the required language"

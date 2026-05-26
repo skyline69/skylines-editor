@@ -126,7 +126,6 @@ local cases = {
 	{ name = "lualine.nvim", expected = "lualine" },
 	{ name = "mason.nvim", expected = "mason" },
 	{ name = "LuaSnip", main = "luasnip", expected = "luasnip" },
-	{ name = "CopilotChat.nvim", expected = "CopilotChat" },
 	{ name = "telescope.nvim", expected = "telescope" },
 	{ name = "vim-illuminate", expected = "illuminate" },
 	{ name = "blink.cmp", expected = "blink.cmp" },
