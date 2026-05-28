@@ -34,63 +34,131 @@ local function write_lock(plugins)
 	vim.fn.writefile(vim.split(json, "\n", { plain = true }), lockfile)
 end
 
-local function git(plugin_dir, args)
-	local cmd = vim.list_extend({ "git", "-C", plugin_dir }, args)
-	local result = vim.system(cmd):wait()
-	return vim.trim(result.stdout or ""), result.code
+local function git_async(dir, args, cb)
+	local cmd = vim.list_extend({ "git", "-C", dir }, args)
+	vim.system(cmd, { text = true }, function(result)
+		cb(vim.trim(result.stdout or ""), result.code)
+	end)
 end
 
-local function check_and_pull(name, lock_entry)
-	local dir = pack_dir .. "/" .. name
-	local old_rev = git(dir, { "rev-parse", "HEAD" })
+-- Branch-tracked plugins: fetch only the default-branch tip (no other heads,
+-- no tags), then fast-forward to FETCH_HEAD. Halves the network payload versus
+-- a full `git fetch origin`.
+local function update_branch(dir, done)
+	git_async(dir, { "fetch", "--quiet", "--no-tags", "origin", "HEAD" }, function(_, code)
+		if code ~= 0 then
+			return done({ error = "fetch failed" })
+		end
+		git_async(dir, { "rev-parse", "HEAD", "FETCH_HEAD" }, function(out, rc)
+			local old_rev, new_rev = out:match("^(%S+)%s+(%S+)")
+			if rc ~= 0 or not old_rev or not new_rev then
+				return done({ error = "rev-parse failed" })
+			end
+			if old_rev == new_rev then
+				return done({})
+			end
+			git_async(dir, { "merge", "--ff-only", new_rev }, function(_, mc)
+				if mc ~= 0 then
+					return done({ error = "merge failed" })
+				end
+				done({ updated = { old = old_rev, new = new_rev } })
+			end)
+		end)
+	end)
+end
 
-	if lock_entry and lock_entry.version then
-		local tags_raw = git(dir, { "tag", "--list", "--sort=-v:refname" })
-		if tags_raw ~= "" then
-			local range_ok, range = pcall(vim.version.range, lock_entry.version)
-			if range_ok and range then
-				for tag in tags_raw:gmatch("[^\n]+") do
-					local ver_ok, ver = pcall(vim.version.parse, tag)
-					if ver_ok and ver and range:has(ver) then
-						git(dir, { "checkout", "--quiet", tag })
-						local new_rev = git(dir, { "rev-parse", "HEAD" })
-						if new_rev ~= old_rev then
-							return { old = old_rev, new = new_rev, tag = tag }
-						end
-						return nil
+-- Version-pinned plugins resolve a tag inside the semver range, so fetch tags
+-- only (skip head transfer) and check out the best match.
+local function update_versioned(dir, version, done)
+	git_async(
+		dir,
+		{ "fetch", "--quiet", "--no-write-fetch-head", "origin", "refs/tags/*:refs/tags/*" },
+		function(_, code)
+			if code ~= 0 then
+				return done({ error = "fetch failed" })
+			end
+			git_async(dir, { "rev-parse", "HEAD" }, function(old_rev, rc)
+				if rc ~= 0 then
+					return done({ error = "rev-parse failed" })
+				end
+				git_async(dir, { "tag", "--list", "--sort=-v:refname" }, function(tags_raw, tc)
+					if tc ~= 0 or tags_raw == "" then
+						return done({})
 					end
+					local range_ok, range = pcall(vim.version.range, version)
+					if not (range_ok and range) then
+						return done({})
+					end
+					local match_tag
+					for tag in tags_raw:gmatch("[^\n]+") do
+						local ver_ok, ver = pcall(vim.version.parse, tag)
+						if ver_ok and ver and range:has(ver) then
+							match_tag = tag
+							break
+						end
+					end
+					if not match_tag then
+						return done({})
+					end
+					git_async(dir, { "checkout", "--quiet", match_tag }, function(_, cc)
+						if cc ~= 0 then
+							return done({ error = "checkout failed" })
+						end
+						git_async(dir, { "rev-parse", "HEAD" }, function(new_rev, nc)
+							if nc ~= 0 then
+								return done({ error = "rev-parse failed" })
+							end
+							if new_rev ~= old_rev then
+								done({ updated = { old = old_rev, new = new_rev, tag = match_tag } })
+							else
+								done({})
+							end
+						end)
+					end)
+				end)
+			end)
+		end
+	)
+end
+
+local function process_plugin(name, lock_entry, done)
+	local dir = pack_dir .. "/" .. name
+	if not (vim.uv or vim.loop).fs_stat(dir) then
+		-- Defer so the dispatch loop always sees uniform async completion.
+		return vim.schedule(function()
+			done({ error = "not installed" })
+		end)
+	end
+	if lock_entry and lock_entry.version then
+		update_versioned(dir, lock_entry.version, done)
+	else
+		update_branch(dir, done)
+	end
+end
+
+local function run_builds(state, updated_names)
+	for _, name in ipairs(updated_names) do
+		local spec = state.registry:get(name)
+		if spec and spec.build then
+			local build = spec.build
+			if type(build) == "function" then
+				pcall(build, spec)
+			elseif type(build) == "string" and build:sub(1, 1) ~= ":" then
+				local args = vim.split(build, "%s+", { trimempty = true })
+				if #args > 0 then
+					vim.system(args, { cwd = pack_dir .. "/" .. name }):wait()
 				end
 			end
 		end
-		return nil
 	end
-
-	local new_rev = git(dir, { "rev-parse", "origin/HEAD" })
-	if new_rev == "" then
-		local branch = git(dir, { "symbolic-ref", "--short", "HEAD" })
-		if branch == "" then
-			branch = "main"
-		end
-		new_rev = git(dir, { "rev-parse", "origin/" .. branch })
-	end
-
-	if new_rev == old_rev or new_rev == "" then
-		return nil
-	end
-
-	local _, merge_code = git(dir, { "merge", "--ff-only", new_rev })
-	if merge_code ~= 0 then
-		return nil, "merge failed"
-	end
-
-	return { old = old_rev, new = new_rev }
 end
+
+local MAX_CONCURRENT = 16
 
 function M.update(state, callback)
 	local lock = read_lock()
 	local names = state.registry:names()
 	local total = #names
-	local completed = 0
 	local results = {}
 
 	if total == 0 then
@@ -100,70 +168,53 @@ function M.update(state, callback)
 		return
 	end
 
-	for _, name in ipairs(names) do
-		local dir = pack_dir .. "/" .. name
-		local stat = (vim.uv or vim.loop).fs_stat(dir)
-		if not stat then
-			results[name] = { error = "not installed" }
-			completed = completed + 1
-			if completed == total then
-				vim.schedule(function()
-					if callback then
-						callback(results)
-					end
-				end)
+	local completed = 0
+	local next_idx = 0
+	local running = 0
+
+	local function finish()
+		local updated_names = {}
+		for name, r in pairs(results) do
+			if r.updated then
+				updated_names[#updated_names + 1] = name
 			end
+		end
+		if #updated_names > 0 then
+			write_lock(lock)
+			run_builds(state, updated_names)
+		end
+		if callback then
+			callback(results)
+		end
+	end
+
+	local pump
+	local function on_done(name, result)
+		results[name] = result
+		if result.updated and lock[name] then
+			lock[name].rev = result.updated.new
+		end
+		running = running - 1
+		completed = completed + 1
+		if completed == total then
+			vim.schedule(finish)
 		else
-			vim.system({ "git", "-C", dir, "fetch", "--quiet", "origin" }, {}, function(fetch_result)
-				vim.schedule(function()
-					local update_info, err
-					if fetch_result.code ~= 0 then
-						err = "fetch failed"
-					else
-						update_info, err = check_and_pull(name, lock[name])
-					end
-					results[name] = { updated = update_info, error = err }
+			pump()
+		end
+	end
 
-					if update_info and lock[name] then
-						lock[name].rev = update_info.new
-					end
-
-					completed = completed + 1
-					if completed == total then
-						local updated_names = {}
-						for n, r in pairs(results) do
-							if r.updated then
-								updated_names[#updated_names + 1] = n
-							end
-						end
-
-						if #updated_names > 0 then
-							write_lock(lock)
-							for _, n in ipairs(updated_names) do
-								local spec = state.registry:get(n)
-								if spec and spec.build then
-									local build_dir = pack_dir .. "/" .. n
-									local build = spec.build
-									if type(build) == "function" then
-										pcall(build, spec)
-									elseif type(build) == "string" and build:sub(1, 1) ~= ":" then
-										local args = vim.split(build, "%s+", { trimempty = true })
-										if #args > 0 then
-											vim.system(args, { cwd = build_dir }):wait()
-										end
-									end
-								end
-							end
-						end
-
-						if callback then
-							callback(results)
-						end
-					end
-				end)
+	pump = function()
+		while running < MAX_CONCURRENT and next_idx < total do
+			next_idx = next_idx + 1
+			local name = names[next_idx]
+			running = running + 1
+			process_plugin(name, lock[name], function(result)
+				on_done(name, result)
 			end)
 		end
 	end
+
+	pump()
 end
 
 local ns = vim.api.nvim_create_namespace("SkylinePackUpdate")
