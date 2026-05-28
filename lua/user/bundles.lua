@@ -270,6 +270,13 @@ local bundles = {
 					end,
 				},
 				{
+					"mfussenegger/nvim-lint",
+					event = { "BufReadPre", "BufNewFile" },
+					config = function()
+						require("user.linting").setup()
+					end,
+				},
+				{
 					"saghen/blink.cmp",
 					event = "InsertEnter",
 					version = "1.*",

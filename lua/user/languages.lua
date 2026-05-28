@@ -40,9 +40,9 @@ local catalog = {
 	},
 	go = {
 		label = "Go",
-		description = "Gopls plus import and line formatting.",
+		description = "Gopls, import/line formatting, and golangci-lint.",
 		servers = { "gopls" },
-		packages = { pkg("gopls"), pkg("goimports"), pkg("golines") },
+		packages = { pkg("gopls"), pkg("goimports"), pkg("golines"), pkg("golangci-lint") },
 	},
 	rust = {
 		label = "Rust",
